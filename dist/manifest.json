@@ -1,0 +1,22 @@
+{
+  "name": "🏅 挑戰小英雄",
+  "short_name": "小英雄",
+  "description": "小朋友習慣養成任務積分系統",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#eff6ff",
+  "theme_color": "#3b82f6",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "screenshots": [],
+  "categories": ["education", "games"],
+  "lang": "zh-HK",
+  "dir": "ltr"
+}
