@@ -708,9 +708,9 @@
       <div v-if="showPetEvolved" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50" @click="showPetEvolved = false">
         <div class="card bg-gradient-to-b from-purple-100 to-purple-300 text-center" :class="reducedMotion ? '' : 'animate-bounce'" @click.stop>
           <span class="text-6xl">{{ gameStore.pet?.avatar }}</span>
-          <p class="font-bold text-xl mt-2">✨ {{ t('levelUp') || 'Level Up!') }} ✨</p>
+<p class="font-bold text-xl mt-2">✨ {{ t('levelUp') ?? 'Level Up!' }} ✨</p>
           <p class="text-lg mt-1">Lv.{{ gameStore.pet?.level }} {{ gameStore.pet?.name }}</p>
-          <button class="btn btn-primary mt-4" @click="showPetEvolved = false">{{ t('awesome') || 'Awesome!' }}</button>
+          <button class="btn btn-primary mt-4" @click="showPetEvolved = false">{{ t('awesome') ?? 'Awesome!' }}</button>
         </div>
       </div>
     </transition>
@@ -728,8 +728,8 @@
         <div class="card bg-gradient-to-b from-blue-100 to-blue-300 text-center" :class="reducedMotion ? '' : 'animate-bounce'" @click.stop>
           <span class="text-6xl">🌟</span>
           <p class="font-bold text-xl mt-2">全能挑戰者!</p>
-          <p class="text-lg text-green-600 font-bold">+{{ synergyAmount }} {{ t('points') || 'points' }}</p>
-          <button class="btn btn-primary mt-4" @click="showSynergy = false">{{ t('cool') || 'Cool!' }}</button>
+          <p class="text-lg text-green-600 font-bold">+{{ synergyAmount }} {{ t('points') ?? 'points' }}</p>
+          <button class="btn btn-primary mt-4" @click="showSynergy = false">{{ t('cool') ?? 'Cool!' }}</button>
         </div>
       </div>
     </transition>
