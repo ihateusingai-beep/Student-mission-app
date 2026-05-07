@@ -18,7 +18,7 @@ const translations = {
     notification: '通知', enableNotify: '開啟通知', dataStatus: '數據狀態', saved: '已儲存', pwa: 'PWA', installable: '可安裝',
     save: '儲存', cancel: '取消', goodJob: '好嘢！', logout: '登出系統', levelUp: '升 level 啦！', awesome: '勁爆！', cool: '正！',
     resetConfirm: '確定要重置所有數據嗎？呢個動作冇得撈！', pinSet: 'PIN 已設定！', pinCleared: 'PIN 已清除',
-    importFailed: '匯入失敗：', badgeUnlocked: '徽章解鎖！', insufficient: '積分唔夠喎，要 {{cost}} 分了',
+    importFailed: '匯入失敗：', badgeUnlocked: '徽章解鎖！', insufficient: '積分唔夠喎，要 {{cost}} 分了', noData: '暫時未有數據',
     exercise: '運動', school: '學校', study: '學習', chores: '家務', habit: '習慣', custom: '自訂',
     streak: '連續達成', days: '日', challengeHero: '挑戰小英雄', pointsLabel: '積分',
     // New features
@@ -50,7 +50,7 @@ const translations = {
     notification: 'Notifications', enableNotify: 'Enable', dataStatus: 'Data', saved: 'Saved', pwa: 'PWA', installable: 'Installable',
     save: 'Save', cancel: 'Cancel', goodJob: 'Great!', logout: 'Logout',
     resetConfirm: 'Reset ALL data? This cannot be undone!', pinSet: 'PIN set!', pinCleared: 'PIN cleared',
-    importFailed: 'Import failed: ', badgeUnlocked: 'Badge Unlocked!', insufficient: 'Not enough points. Need {{cost}}',
+    importFailed: 'Import failed: ', badgeUnlocked: 'Badge Unlocked!', insufficient: 'Not enough points. Need {{cost}}', noData: 'No data yet',
     exercise: 'Exercise', school: 'School', study: 'Study', chores: 'Chores', habit: 'Habit', custom: 'Custom',
     streak: 'Streak', days: 'days', challengeHero: 'Challenge Hero', pointsLabel: 'Pts',
     // New features
@@ -82,7 +82,7 @@ const translations = {
     notification: '通知', enableNotify: '开启通知', dataStatus: '数据状态', saved: '已储存', pwa: 'PWA', installable: '可安装',
     save: '储存', cancel: '取消', goodJob: '好嘢！', logout: '登出系统',
     resetConfirm: '確定要重置所有數據嗎？呢個動作冇得撈！', pinSet: 'PIN 已設定！', pinCleared: 'PIN 已清除',
-    importFailed: '匯入失敗：', badgeUnlocked: '徽章解鎖！', insufficient: '積分唔夠喎，要 {{cost}} 分了',
+    importFailed: '匯入失敗：', badgeUnlocked: '徽章解鎖！', insufficient: '積分唔夠喎，要 {{cost}} 分了', noData: '暫時未有數據',
     exercise: '運動', school: '學校', study: '學習', chores: '家務', habit: '習慣', custom: '自訂',
     streak: '連續', days: '日', challengeHero: '挑戰小英雄', pointsLabel: '積分',
     // New features

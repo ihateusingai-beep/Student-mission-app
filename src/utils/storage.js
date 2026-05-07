@@ -300,3 +300,23 @@ class LocalStorage {
 }
 
 export const storage = new LocalStorage()
+
+// 導出為 CSV（for Excel）
+export function exportToCSV() {
+  const data = storage.loadLogs()
+  if (!data || data.length === 0) return null
+  
+  const headers = ['時間', '類型', '內容', '積分']
+  const rows = data.map(log => [
+    log.time || '',
+    log.type || '',
+    log.text || '',
+    log.points || '0'
+  ])
+  
+  const csv = [headers, ...rows].map(row => 
+    row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+  ).join('\n')
+  
+  return csv
+}

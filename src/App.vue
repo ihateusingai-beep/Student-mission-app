@@ -614,7 +614,8 @@
           <div class="card">
             <h3 class="font-bold text-gray-700 mb-3">💾 {{ t('dataManage') }}</h3>
             <div class="flex gap-2 flex-wrap">
-              <button @click="exportData" class="btn btn-primary flex-1">📤</button>
+              <button @click="exportData" class="btn btn-primary flex-1">📤 JSON</button>
+              <button @click="exportCSV" class="btn btn-warning flex-1">📊 CSV</button>
               <label class="btn btn-success flex-1 text-center cursor-pointer">
                 📥
                 <input type="file" @change="importData" accept=".json" class="hidden" />
@@ -1091,6 +1092,31 @@ function exportData() {
   const a = document.createElement('a')
   a.href = url
   a.download = `challengehero_${new Date().toISOString().split('T')[0]}.json`
+  a.click()
+  URL.revokeObjectURL(url)
+}
+
+function exportCSV() {
+  const logs = userStore.logs || []
+  if (logs.length === 0) {
+    alert(t('noData'))
+    return
+  }
+  const headers = ['時間', '類型', '內容', '積分']
+  const rows = logs.map(log => [
+    log.time || '',
+    log.type || '',
+    log.text || '',
+    log.points || '0'
+  ])
+  const csv = [headers, ...rows].map(row => 
+    row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(',')
+  ).join('\n')
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = `challengehero_${new Date().toISOString().split('T')[0]}.csv`
   a.click()
   URL.revokeObjectURL(url)
 }
