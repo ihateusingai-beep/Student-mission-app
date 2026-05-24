@@ -8,7 +8,7 @@
           <p class="text-sm opacity-80">{{ userStore.currentUser?.name }} {{ t('dailyTasks').toLowerCase() }}</p>
         </div>
         <div class="text-right">
-          <p class="text-2xl font-bold">{{ userStore.userPoints }} 積分</p>
+          <p class="text-2xl font-bold">{{ userStore.userPoints }} {{ t('pointsLabel') }}</p>
           <p class="text-xs opacity-80">{{ t('pointsLabel') }}</p>
         </div>
       </div>
@@ -57,7 +57,7 @@
                 <p class="text-sm">❤️ {{ gameStore.pet.happiness }}/100 | ⭐ {{ gameStore.pet.level }}</p>
               </div>
             </div>
-            <span class="text-sm opacity-70">撳入去見佢 ></span>
+            <span class="text-sm opacity-70">{{ t('tapToSee') }} ></span>
           </div>
         </div>
 
@@ -94,12 +94,16 @@
         <div class="card">
           <h3 class="font-bold text-gray-700 mb-3">📋 {{ t('dailyTasks') }}</h3>
           <div class="space-y-2">
+            <div v-if="userStore.todayTasks.length === 0" class="empty-state">
+              <span class="empty-state-icon">📋</span>
+              <p class="empty-state-text">{{ t('noData') }}</p>
+            </div>
             <div v-for="task in userStore.todayTasks.slice(0, 4)" :key="task.id" class="flex items-center justify-between p-3 rounded-xl bg-gray-50 transition-all duration-300" :class="{ 'opacity-50': task.completedToday }">
               <div class="flex items-center gap-3">
                 <span class="text-xl">{{ getCategoryIcon(task.category) }}</span>
                 <div>
                   <p class="font-medium">{{ task.name }}</p>
-                  <p class="text-xs text-gray-500">+{{ task.reward }} 積分</p>
+                  <p class="text-xs text-gray-500">+{{ task.reward }} {{ t('pointsLabel') }}</p>
                 </div>
               </div>
               <button @click="completeTaskWithFX(task.id)" :disabled="task.completedToday" class="btn transition-all duration-200 active:scale-95" :class="task.completedToday ? 'bg-green-500 text-white' : 'btn-success'">
@@ -139,7 +143,11 @@
             <span class="text-sm text-gray-500">{{ userStore.completedCount }}/{{ userStore.tasks.length }}</span>
           </div>
           <div class="space-y-3">
-            <div v-for="task in userStore.tasks" :key="task.id" class="p-4 rounded-xl transition-all duration-300" :class="task.completedToday ? 'bg-green-50 border-2 border-green-300 scale-[0.98]' : 'bg-gray-50 hover:scale-[0.99]'">
+            <div v-if="userStore.tasks.length === 0" class="empty-state">
+              <span class="empty-state-icon">📋</span>
+              <p class="empty-state-text">{{ t('noData') }}</p>
+            </div>
+            <div v-for="task in userStore.tasks" :key="task.id" class="p-4 rounded-xl transition-all duration-300" :class="task.completedToday ? 'bg-green-50 border-2 border-green-300 scale-[0.98]' : 'bg-gray-50 hover:scale-[0.99] hover:shadow-md'">
               <div class="flex items-center justify-between">
                 <div class="flex items-center gap-3">
                   <span class="text-2xl" :class="!task.completedToday && !reducedMotion ? 'animate-pulse' : ''">{{ getCategoryIcon(task.category) }}</span>
@@ -149,7 +157,7 @@
                   </div>
                 </div>
                 <div class="text-right">
-                  <p class="text-xl font-bold text-green-600">+{{ task.reward }} 積分</p>
+                  <p class="text-xl font-bold text-green-600">+{{ task.reward }} {{ t('pointsLabel') }}</p>
                   <button @click="completeTaskWithFX(task.id)" :disabled="task.completedToday" class="btn mt-1 transition-all duration-200 active:scale-95" :class="task.completedToday ? 'bg-gray-300 cursor-not-allowed' : 'btn-success'">
                     {{ task.completedToday ? '✅' : '📍 ' + t('checkIn') }}
                   </button>
@@ -168,16 +176,20 @@
               <h2 class="font-bold text-lg">🎁 {{ t('rewardStore') }}</h2>
               <p class="text-sm opacity-80">{{ t('pointsToExchange') }}</p>
             </div>
-            <div class="text-2xl font-bold">{{ userStore.userPoints }} 積分</div>
+            <div class="text-2xl font-bold">{{ userStore.userPoints }} {{ t('pointsLabel') }}</div>
           </div>
         </div>
         <div class="grid gap-3">
+          <div v-if="userStore.rewards.length === 0" class="empty-state">
+            <span class="empty-state-icon">🎁</span>
+            <p class="empty-state-text">{{ t('noData') }}</p>
+          </div>
           <div v-for="reward in userStore.rewards" :key="reward.id" :class="[!reward.available || reward.cost > userStore.userPoints ? 'opacity-40 grayscale' : 'hover:scale-[0.99]', reward.justClaimed ? (reducedMotion ? 'border-2 border-purple-400' : 'animate-bounce border-2 border-purple-400') : '']">
             <div class="flex items-center gap-3">
               <span class="text-3xl">{{ reward.icon }}</span>
               <div>
                 <p class="font-bold">{{ reward.name }}</p>
-                <p class="text-sm text-gray-500">{{ reward.cost }} 積分</p>
+                <p class="text-sm text-gray-500">{{ reward.cost }} {{ t('pointsLabel') }}</p>
               </div>
             </div>
             <button @click="claimRewardWithFX(reward)" :disabled="!reward.available || reward.cost > userStore.userPoints" class="btn transition-all duration-200 active:scale-95" :class="[reward.available && reward.cost <= userStore.userPoints ? 'btn-primary' : 'bg-gray-300 cursor-not-allowed']">
@@ -342,7 +354,11 @@
         </div>
 
         <div class="space-y-2">
-          <div v-for="(entry, idx) in gameStore.getLeaderboard(leaderboardType)" :key="entry.id" class="card flex items-center justify-between" :class="getRankClass(idx)">
+          <div v-if="gameStore.getLeaderboard(leaderboardType).length === 0" class="empty-state">
+            <span class="empty-state-icon">🏆</span>
+            <p class="empty-state-text">{{ t('noData') }}</p>
+          </div>
+          <div v-for="(entry, idx) in gameStore.getLeaderboard(leaderboardType)" :key="entry.id" class="card flex items-center justify-between hover:shadow-lg transition-shadow" :class="getRankClass(idx)">
             <div class="flex items-center gap-3">
               <span class="text-2xl font-bold w-8">{{ getRankEmoji(idx) }}</span>
               <span class="text-2xl">{{ entry.avatar }}</span>
@@ -352,7 +368,7 @@
               </div>
             </div>
             <div class="text-right">
-              <p class="font-bold text-green-600">+{{ entry.points }} 積分</p>
+              <p class="font-bold text-green-600">+{{ entry.points }} {{ t('pointsLabel') }}</p>
               <p class="text-xs text-gray-500">{{ entry.xp }} XP</p>
             </div>
           </div>
@@ -388,7 +404,7 @@
           <div class="mt-4 flex items-center justify-between">
             <div>
               <p class="text-sm text-gray-500">{{ t('bonusReward') }}</p>
-              <p class="text-2xl font-bold text-green-600">+{{ gameStore.dailyMission.bonus }} 積分</p>
+              <p class="text-2xl font-bold text-green-600">+{{ gameStore.dailyMission.bonus }} {{ t('pointsLabel') }}</p>
             </div>
             <button v-if="!gameStore.dailyMissionDone" @click="completeDailyMission" class="btn btn-success">📍 {{ t('complete') }}</button>
             <span v-else class="text-green-500 font-bold">✅ {{ t('completed') }}</span>
@@ -637,7 +653,7 @@
             </div>
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
               <span>💰 {{ t('pointsBalance') }}</span>
-              <span class="font-bold text-green-600">{{ userStore.userPoints }} 積分</span>
+              <span class="font-bold text-green-600">{{ userStore.userPoints }} {{ t('pointsLabel') }}</span>
             </div>
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
               <span>📅 {{ t('accountCreated') }}</span>

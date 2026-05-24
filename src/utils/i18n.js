@@ -21,6 +21,7 @@ const translations = {
     importFailed: '匯入失敗：', badgeUnlocked: '徽章解鎖！', insufficient: '積分唔夠喎，要 {{cost}} 分了', noData: '暫時未有數據',
     exercise: '運動', school: '學校', study: '學習', chores: '家務', habit: '習慣', custom: '自訂',
     streak: '連續達成', days: '日', challengeHero: '挑戰小英雄', pointsLabel: '積分',
+    tapToSee: '撳入去見佢',
     // New features
     abilities: '能力', myAbilities: '我的能力', abilityDesc: '完成任務獲取能力值', abilityProgress: '能力進度',
     pet: '寵物', noPet: '你仲未養寵物', adoptPetTip: '選擇一隻陪你成長既寵物', feed: '餵食', play: '陪佢玩', hunger: '飢餓', happiness: '開心指數',
@@ -28,6 +29,8 @@ const translations = {
     leaderboard: '排行榜', weeklyRank: '本週排名', yourRank: '你既排名', weekly: '本週', allTime: '總榜', tasksDone: '個任務',
     consolationPrizes: '安慰獎', participation: '參與獎', improvement: '進步獎',
     dailyMystery: '神秘任務', dailyMissionTip: '每日更新，獎勵 Bonus', missionHistory: '任務歷史', bonusReward: '獎勵',
+    waiting: '請稍候',
+    petStats: '寵物狀態',
     themes: '主題', themeTip: '改變 app 既外觀',
     leaderboardRank: '#',
     // New features
@@ -53,6 +56,7 @@ const translations = {
     importFailed: 'Import failed: ', badgeUnlocked: 'Badge Unlocked!', insufficient: 'Not enough points. Need {{cost}}', noData: 'No data yet',
     exercise: 'Exercise', school: 'School', study: 'Study', chores: 'Chores', habit: 'Habit', custom: 'Custom',
     streak: 'Streak', days: 'days', challengeHero: 'Challenge Hero', pointsLabel: 'Pts',
+    tapToSee: 'Tap to see',
     // New features
     abilities: 'Abilities', myAbilities: 'My Abilities', abilityDesc: 'Complete tasks to gain XP', abilityProgress: 'Progress',
     pet: 'Pet', noPet: 'No pet yet', adoptPetTip: 'Choose a companion', feed: 'Feed', play: 'Play', hunger: 'Hunger', happiness: 'Happiness',
@@ -60,6 +64,8 @@ const translations = {
     leaderboard: 'Leaderboard', weeklyRank: 'Weekly', yourRank: 'Your Rank', weekly: 'Weekly', allTime: 'All Time', tasksDone: 'tasks',
     consolationPrizes: 'Prizes', participation: 'Join', improvement: 'Improve',
     dailyMystery: 'Mystery', dailyMissionTip: 'Daily bonus task', missionHistory: 'History', bonusReward: 'Reward',
+    waiting: 'Please wait',
+    petStats: 'Pet Stats',
     themes: 'Themes', themeTip: 'Change look',
     leaderboardRank: '#',
     // New features
@@ -85,6 +91,7 @@ const translations = {
     importFailed: '匯入失敗：', badgeUnlocked: '徽章解鎖！', insufficient: '積分唔夠喎，要 {{cost}} 分了', noData: '暫時未有數據',
     exercise: '運動', school: '學校', study: '學習', chores: '家務', habit: '習慣', custom: '自訂',
     streak: '連續', days: '日', challengeHero: '挑戰小英雄', pointsLabel: '積分',
+    tapToSee: '点击进入',
     // New features
     abilities: '能力', myAbilities: '我的能力', abilityDesc: '完成任务获取能力值', abilityProgress: '能力进度',
     pet: '宠物', noPet: '还未养宠物', adoptPetTip: '选择一只陪你成长', feed: '喂食', play: '陪玩', hunger: '饥饿', happiness: '开心值',
@@ -92,6 +99,8 @@ const translations = {
     leaderboard: '排行榜', weeklyRank: '本周排名', yourRank: '你的排名', weekly: '本周', allTime: '总榜', tasksDone: '个任务',
     consolationPrizes: '安慰奖', participation: '参与奖', improvement: '进步奖',
     dailyMystery: '神秘任务', dailyMissionTip: '每日更新，奖励 Bonus', missionHistory: '任务历史', bonusReward: '奖励',
+    waiting: '请稍候',
+    petStats: '宠物状态',
     themes: '主题', themeTip: '改变外观',
     leaderboardRank: '#',
     // New features
