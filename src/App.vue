@@ -14,7 +14,7 @@
       </div>
       <div class="mt-2">
         <div class="flex justify-between text-xs opacity-80 mb-1">
-          <span>🔥 {{ t('streak') }}</span>
+          <span :class="(userStore.settings?.streak || 0) >= 7 && !reducedMotion ? 'animate-fire' : ''">🔥 {{ t('streak') }}</span>
           <span>{{ userStore.settings?.streak || 0 }} {{ t('days') }}</span>
         </div>
         <div class="w-full bg-white/30 rounded-full h-2">
@@ -26,7 +26,7 @@
     <!-- Navigation -->
     <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 pb-safe z-50">
       <div class="flex justify-around py-2 overflow-x-auto">
-        <button v-for="tab in tabs" :key="tab.id" @click="handleTabClick(tab.id)" :class="['flex flex-col items-center px-2 py-1 rounded-lg transition-all duration-200 min-w-fit', currentTab === tab.id ? 'text-blue-500 bg-blue-50 scale-105' : 'text-gray-400']">
+        <button v-for="tab in tabs" :key="tab.id" @click="handleTabClick(tab.id)" :aria-label="t(tab.id)" :class="['flex flex-col items-center px-2 py-1 rounded-lg transition-all duration-200 min-w-fit', currentTab === tab.id ? 'text-blue-500 bg-blue-50 scale-105' : 'text-gray-400']">
           <span class="text-xl">{{ tab.icon }}</span>
           <span class="text-xs whitespace-nowrap">{{ t(tab.id) }}</span>
         </button>
@@ -86,7 +86,7 @@
                 <p class="text-sm">+{{ gameStore.dailyMission.bonus }} {{ t('pointsLabel') }}</p>
               </div>
             </div>
-            <button v-if="!gameStore.dailyMission.completed" @click="completeDailyMission" class="btn bg-white/20">📍</button>
+            <button v-if="!gameStore.dailyMission.completed" @click="completeDailyMission" class="btn bg-white/20" aria-label="完成每日神秘任務">📍</button>
             <span v-else class="text-green-300">✅</span>
           </div>
         </div>
@@ -106,10 +106,13 @@
                   <p class="text-xs text-gray-500">+{{ task.reward }} {{ t('pointsLabel') }}</p>
                 </div>
               </div>
-              <button @click="completeTaskWithFX(task.id)" :disabled="task.completedToday" class="btn transition-all duration-200 active:scale-95" :class="task.completedToday ? 'bg-green-500 text-white' : 'btn-success'">
-                <span v-if="task.completedToday">✅</span>
-                <span v-else>📍</span>
-              </button>
+              <div class="flex items-center gap-2">
+                <button @click="speakTask(task.name)" class="btn bg-gray-200 text-gray-600 p-2" :aria-label="'朗讀任務: ' + task.name">🔊</button>
+                <button @click="completeTaskWithFX(task.id)" :disabled="task.completedToday" class="btn transition-all duration-200 active:scale-95" :class="task.completedToday ? 'bg-green-500 text-white' : 'btn-success'" :aria-label="task.completedToday ? '已完成' : '打卡'">
+                  <span v-if="task.completedToday">✅</span>
+                  <span v-else>📍</span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -156,11 +159,14 @@
                     <p class="text-sm text-gray-500">{{ task.category }} | {{ t('totalCount', {count: task.totalCount}) }}</p>
                   </div>
                 </div>
-                <div class="text-right">
-                  <p class="text-xl font-bold text-green-600">+{{ task.reward }} {{ t('pointsLabel') }}</p>
-                  <button @click="completeTaskWithFX(task.id)" :disabled="task.completedToday" class="btn mt-1 transition-all duration-200 active:scale-95" :class="task.completedToday ? 'bg-gray-300 cursor-not-allowed' : 'btn-success'">
-                    {{ task.completedToday ? '✅' : '📍 ' + t('checkIn') }}
-                  </button>
+                <div class="flex items-center gap-2">
+                  <button @click="speakTask(task.name)" class="btn bg-gray-200 text-gray-600 p-2" :aria-label="'朗讀任務: ' + task.name">🔊</button>
+                  <div class="text-right">
+                    <p class="text-xl font-bold text-green-600">+{{ task.reward }} {{ t('pointsLabel') }}</p>
+                    <button @click="completeTaskWithFX(task.id)" :disabled="task.completedToday" class="btn mt-1 transition-all duration-200 active:scale-95" :class="task.completedToday ? 'bg-gray-300 cursor-not-allowed' : 'btn-success'" :aria-label="task.completedToday ? '已完成打卡' : '打卡'">
+                      {{ task.completedToday ? '✅' : '📍 ' + t('checkIn') }}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -293,10 +299,10 @@
           </div>
 
           <div class="mt-4 space-y-2">
-            <button @click="feedPet" :disabled="gameStore.pet.hunger >= 100" class="btn btn-success w-full" :class="gameStore.pet.hunger >= 100 ? 'opacity-50' : ''">
+            <button @click="feedPet" :disabled="gameStore.pet.hunger >= 100" class="btn btn-success w-full" :class="gameStore.pet.hunger >= 100 ? 'opacity-50' : ''" :aria-label="'餵寵物消耗10點'">
               🍖 {{ t('feed') }} (-10 {{ t('pointsLabel') }})
             </button>
-            <button @click="playWithPet" :disabled="gameStore.pet.happiness >= 100" class="btn btn-primary w-full" :class="gameStore.pet.happiness >= 100 ? 'opacity-50' : ''">
+            <button @click="playWithPet" :disabled="gameStore.pet.happiness >= 100" class="btn btn-primary w-full" :class="gameStore.pet.happiness >= 100 ? 'opacity-50' : ''" :aria-label="'與寵物玩耍增加5點幸福感'">
               🎾 {{ t('play') }} (+5 {{ t('happiness') }})
             </button>
           </div>
@@ -307,7 +313,7 @@
           <h2 class="text-xl font-bold mt-4">{{ t('noPet') }}</h2>
           <p class="text-sm text-gray-500 mb-4">{{ t('adoptPetTip') }}</p>
           <div class="grid grid-cols-2 gap-2">
-            <button v-for="type in petTypes" :key="type.id" @click="adoptPet(type)" class="card hover:scale-105 transition-all">
+            <button v-for="type in petTypes" :key="type.id" @click="adoptPet(type)" class="card hover:scale-105 transition-all" :aria-label="'領養' + type.name">
               <span class="text-3xl">{{ type.avatar }}</span>
               <p class="font-bold text-sm">{{ type.name }}</p>
             </button>
@@ -349,8 +355,8 @@
         </div>
 
         <div class="flex gap-2">
-          <button @click="leaderboardType = 'weekly'" :class="['flex-1 btn', leaderboardType === 'weekly' ? 'btn-primary' : 'bg-gray-200']">{{ t('weekly') }}</button>
-          <button @click="leaderboardType = 'alltime'" :class="['flex-1 btn', leaderboardType === 'alltime' ? 'btn-primary' : 'bg-gray-200']">{{ t('allTime') }}</button>
+          <button @click="leaderboardType = 'weekly'" :class="['flex-1 btn', leaderboardType === 'weekly' ? 'btn-primary' : 'bg-gray-200']" :aria-label="'每週排行榜'">{{ t('weekly') }}</button>
+          <button @click="leaderboardType = 'alltime'" :class="['flex-1 btn', leaderboardType === 'alltime' ? 'btn-primary' : 'bg-gray-200']" :aria-label="'歷史排行榜'">{{ t('allTime') }}</button>
         </div>
 
         <div class="space-y-2">
@@ -406,7 +412,7 @@
               <p class="text-sm text-gray-500">{{ t('bonusReward') }}</p>
               <p class="text-2xl font-bold text-green-600">+{{ gameStore.dailyMission.bonus }} {{ t('pointsLabel') }}</p>
             </div>
-            <button v-if="!gameStore.dailyMissionDone" @click="completeDailyMission" class="btn btn-success">📍 {{ t('complete') }}</button>
+            <button v-if="!gameStore.dailyMissionDone" @click="completeDailyMission" class="btn btn-success" aria-label="完成神秘任務">📍 {{ t('complete') }}</button>
             <span v-else class="text-green-500 font-bold">✅ {{ t('completed') }}</span>
           </div>
         </div>
@@ -429,7 +435,7 @@
           </div>
           <p class="text-lg font-bold">{{ t('todayLuck') }}: {{ gameStore.getTodayMultiplier() }}{{ t('multiplier') }}</p>
           
-          <button v-if="gameStore.canSpinWheel()" @click="spinWheel" class="btn btn-primary mt-4 text-lg px-8 py-3">
+          <button v-if="gameStore.canSpinWheel()" @click="spinWheel" class="btn btn-primary mt-4 text-lg px-8 py-3" aria-label="旋轉幸運轉盤">
             🎲 {{ t('spinWheel') }}
           </button>
           <p v-else class="text-gray-500 mt-4">{{ t('cantSpin') }}</p>
@@ -461,7 +467,7 @@
             <p class="text-xs text-gray-500">{{ cert.desc }}</p>
             <span v-if="gameStore.certificates.includes(cert.id)" class="text-green-500 text-lg">✅</span>
             
-            <button v-if="gameStore.certificates.includes(cert.id)" @click="printCertificate(cert)" class="btn btn-primary mt-2 text-xs">
+            <button v-if="gameStore.certificates.includes(cert.id)" @click="printCertificate(cert)" class="btn btn-primary mt-2 text-xs" aria-label="列印證書">
               🖨️ {{ t('print') }}
             </button>
           </div>
@@ -565,8 +571,8 @@
         <div v-if="!adminUnlocked" class="card">
           <h2 class="font-bold text-lg text-center mb-4">🔐 {{ t('adminConsole') }}</h2>
           <p class="text-sm text-gray-500 text-center mb-4">{{ t('needPin') }}</p>
-          <input v-model="pinInput" type="password" maxlength="4" :placeholder="t('enterPin')" class="w-full px-4 py-3 text-center text-xl border-2 border-gray-300 rounded-xl mb-3" />
-          <button @click="verifyPin" class="btn btn-primary w-full">{{ t('confirm') }}</button>
+          <input v-model="pinInput" type="password" maxlength="4" :placeholder="t('enterPin')" class="w-full px-4 py-3 text-center text-xl border-2 border-gray-300 rounded-xl mb-3" aria-label="輸入PIN碼" />
+          <button @click="verifyPin" class="btn btn-primary w-full" aria-label="確認PIN">{{ t('confirm') }}</button>
           <p v-if="pinError" class="text-red-500 text-center mt-2">{{ t('pinError') }}</p>
         </div>
 
@@ -574,7 +580,7 @@
           <div class="card bg-gradient-to-r from-red-500 to-orange-500 text-white">
             <div class="flex justify-between items-center">
               <h2 class="font-bold text-lg">🔧 {{ t('adminConsole') }}</h2>
-              <button @click="lockAdmin" class="text-sm bg-white/20 px-2 py-1 rounded">🔒 {{ t('lock') }}</button>
+              <button @click="lockAdmin" class="text-sm bg-white/20 px-2 py-1 rounded" aria-label="鎖定管理員">🔒 {{ t('lock') }}</button>
             </div>
           </div>
 
@@ -583,7 +589,7 @@
             <div class="flex gap-2">
               <input v-model="rewardAmount" type="number" :placeholder="t('points')" class="flex-1 px-3 py-2 border rounded-xl" />
               <input v-model="rewardReason" :placeholder="t('reason')" class="flex-1 px-3 py-2 border rounded-xl" />
-              <button @click="addRewardPoints" class="btn btn-success">➤</button>
+              <button @click="addRewardPoints" class="btn btn-success" aria-label="給予獎勵">➤</button>
             </div>
           </div>
 
@@ -601,7 +607,7 @@
                   <option value="習慣">{{ t('habit') }}</option>
                   <option value="自訂">{{ t('custom') }}</option>
                 </select>
-                <button @click="addNewTask" class="btn btn-primary">+</button>
+                <button @click="addNewTask" class="btn btn-primary" aria-label="新增任務">+</button>
               </div>
             </div>
           </div>
@@ -613,7 +619,7 @@
               <div class="flex gap-2">
                 <input v-model.number="newReward.cost" type="number" :placeholder="t('cost')" class="flex-1 px-3 py-2 border rounded-xl" />
                 <input v-model="newReward.icon" placeholder="🎁" class="w-16 px-3 py-2 border rounded-xl" />
-                <button @click="addNewReward" class="btn btn-primary">+</button>
+                <button @click="addNewReward" class="btn btn-primary" aria-label="新增獎勵">+</button>
               </div>
             </div>
           </div>
@@ -622,21 +628,21 @@
             <h3 class="font-bold text-gray-700 mb-3">🔐 {{ t('setPin') }}</h3>
             <div class="flex gap-2">
               <input v-model="newPin" type="password" maxlength="4" :placeholder="t('newPin')" class="flex-1 px-3 py-2 border rounded-xl" />
-              <button @click="savePin" class="btn btn-primary">✓</button>
-              <button v-if="userStore.settings?.adminPin" @click="clearPin" class="btn bg-red-500 text-white">✕</button>
+              <button @click="savePin" class="btn btn-primary" aria-label="儲存PIN">✓</button>
+              <button v-if="userStore.settings?.adminPin" @click="clearPin" class="btn bg-red-500 text-white" aria-label="清除PIN">✕</button>
             </div>
           </div>
 
           <div class="card">
             <h3 class="font-bold text-gray-700 mb-3">💾 {{ t('dataManage') }}</h3>
             <div class="flex gap-2 flex-wrap">
-              <button @click="exportData" class="btn btn-primary flex-1">📤 JSON</button>
-              <button @click="exportCSV" class="btn btn-warning flex-1">📊 CSV</button>
-              <label class="btn btn-success flex-1 text-center cursor-pointer">
+              <button @click="exportData" class="btn btn-primary flex-1" aria-label="匯出JSON">📤 JSON</button>
+              <button @click="exportCSV" class="btn btn-warning flex-1" aria-label="匯出CSV">📊 CSV</button>
+              <label class="btn btn-success flex-1 text-center cursor-pointer" aria-label="匯入JSON">
                 📥
                 <input type="file" @change="importData" accept=".json" class="hidden" />
               </label>
-              <button @click="resetData" class="btn bg-red-500 text-white flex-1">🔄</button>
+              <button @click="resetData" class="btn bg-red-500 text-white flex-1" aria-label="重設資料">🔄</button>
             </div>
           </div>
         </div>
@@ -667,11 +673,11 @@
             </div>
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
               <span>🔊 {{ t('sound') }}</span>
-              <button @click="toggleSound" :class="soundEnabled ? 'text-green-600' : 'text-red-500'">{{ soundEnabled ? t('on') : t('off') }}</button>
+              <button @click="toggleSound" :class="soundEnabled ? 'text-green-600' : 'text-red-500'" :aria-label="soundEnabled ? '關閉聲音' : '開啟聲音'">{{ soundEnabled ? t('on') : t('off') }}</button>
             </div>
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
               <span>🔔 {{ t('notification') }}</span>
-              <button @click="requestNotification" :class="notificationEnabled ? 'text-green-600' : 'text-blue-500'">{{ notificationEnabled ? t('on') : t('enableNotify') }}</button>
+              <button @click="requestNotification" :class="notificationEnabled ? 'text-green-600' : 'text-blue-500'" :aria-label="notificationEnabled ? '關閉通知' : '開啟通知'">{{ notificationEnabled ? t('on') : t('enableNotify') }}</button>
             </div>
             <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl">
               <span>💾 {{ t('dataStatus') }}</span>
@@ -683,7 +689,7 @@
             </div>
           </div>
         </div>
-        <button class="btn bg-red-500 text-white w-full py-3 transition-all duration-200 active:scale-95">🚪 {{ t('logout') }}</button>
+        <button class="btn bg-red-500 text-white w-full py-3 transition-all duration-200 active:scale-95" aria-label="登出">🚪 {{ t('logout') }}</button>
       </div>
     </main>
 
@@ -701,7 +707,7 @@
           <span class="text-6xl">{{ unlockedBadgeIcon }}</span>
           <p class="font-bold text-xl mt-2">🎉 {{ t('badgeUnlocked') }}</p>
           <p class="font-bold text-lg mt-1">{{ unlockedBadgeName }}</p>
-          <button class="btn btn-primary mt-4" @click="closeBadgeModal">{{ t('goodJob') }}</button>
+          <button class="btn btn-primary mt-4" @click="closeBadgeModal" aria-label="關閉">🎉 {{ t('goodJob') }}</button>
         </div>
       </div>
     </transition>
@@ -713,8 +719,8 @@
           <h3 class="font-bold text-lg mb-4">{{ t('userName') }}</h3>
           <input v-model="editNameValue" class="w-full px-3 py-2 border rounded-xl mb-4" />
           <div class="flex gap-2">
-            <button @click="saveName" class="btn btn-primary flex-1">{{ t('save') }}</button>
-            <button @click="showNameModal = false" class="btn bg-gray-300 flex-1">{{ t('cancel') }}</button>
+            <button @click="saveName" class="btn btn-primary flex-1" aria-label="儲存名字">{{ t('save') }}</button>
+            <button @click="showNameModal = false" class="btn bg-gray-300 flex-1" aria-label="取消">{{ t('cancel') }}</button>
           </div>
         </div>
       </div>
@@ -727,7 +733,7 @@
           <span class="text-6xl">{{ gameStore.pet?.avatar }}</span>
 <p class="font-bold text-xl mt-2">✨ {{ t('levelUp') ?? 'Level Up!' }} ✨</p>
           <p class="text-lg mt-1">Lv.{{ gameStore.pet?.level }} {{ gameStore.pet?.name }}</p>
-          <button class="btn btn-primary mt-4" @click="showPetEvolved = false">{{ t('awesome') ?? 'Awesome!' }}</button>
+          <button @click="showPetEvolved = false" class="btn btn-primary mt-4" aria-label="關閉">{{ t('awesome') ?? 'Awesome!' }}</button>
         </div>
       </div>
     </transition>
@@ -746,10 +752,13 @@
           <span class="text-6xl">🌟</span>
           <p class="font-bold text-xl mt-2">全能挑戰者!</p>
           <p class="text-lg text-green-600 font-bold">+{{ synergyAmount }} {{ t('points') ?? 'points' }}</p>
-          <button class="btn btn-primary mt-4" @click="showSynergy = false">{{ t('cool') ?? 'Cool!' }}</button>
+          <button class="btn btn-primary mt-4" @click="showSynergy = false" aria-label="關閉">{{ t('cool') ?? 'Cool!' }}</button>
         </div>
       </div>
     </transition>
+
+    <!-- Confetti Container -->
+    <div v-if="showConfetti" id="confetti-container" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
   </div>
 </template>
 
@@ -793,6 +802,57 @@ const showAbilityUp = ref(false)
 const abilityUpKey = ref('')
 const showSynergy = ref(false)
 const synergyAmount = ref(0)
+const showConfetti = ref(false)
+
+// Confetti colors
+const confettiColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181', '#aa96da', '#fcbad3']
+
+function triggerConfetti() {
+  if (reducedMotion.value) return
+  showConfetti.value = true
+  createConfetti()
+  setTimeout(() => { showConfetti.value = false }, 2000)
+}
+
+function createConfetti() {
+  const container = document.getElementById('confetti-container')
+  if (!container) return
+  container.innerHTML = ''
+  
+  for (let i = 0; i < 50; i++) {
+    const confetti = document.createElement('div')
+    confetti.className = 'confetti-piece'
+    confetti.style.cssText = `
+      position: absolute;
+      width: ${Math.random() * 10 + 5}px;
+      height: ${Math.random() * 10 + 5}px;
+      background: ${confettiColors[Math.floor(Math.random() * confettiColors.length)]};
+      left: ${Math.random() * 100}%;
+      top: -20px;
+      opacity: 1;
+      border-radius: ${Math.random() > 0.5 ? '50%' : '0'};
+      transform: rotate(${Math.random() * 360}deg);
+      animation: confetti-fall ${Math.random() * 2 + 2}s ease-out forwards;
+      animation-delay: ${Math.random() * 0.5}s;
+    `
+    container.appendChild(confetti)
+  }
+  
+  setTimeout(() => { container.innerHTML = '' }, 2500)
+}
+
+// TTS speakTask function using Web Speech API
+function speakTask(text) {
+  if ('speechSynthesis' in window) {
+    // Cancel any ongoing speech
+    window.speechSynthesis.cancel()
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.lang = 'zh-TW'
+    utterance.rate = 1
+    utterance.pitch = 1
+    window.speechSynthesis.speak(utterance)
+  }
+}
 
 onMounted(() => {
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
@@ -956,6 +1016,7 @@ function completeTaskWithFX(taskId) {
     const leveledUp = gameStore.addPetExp(5)
     sfx.playTaskComplete()
     showPointsAnimation(reward)
+    triggerConfetti()
 
     if (leveledUp) {
       sfx.playEvolve()
@@ -1269,7 +1330,7 @@ function printCertificate(cert) {
   <title>${cert.name}</title>
   <style>
     body { font-family: 'Comic Sans MS', cursive, sans-serif; padding: 40px; text-align: center; }
-    .certificate { border: 8px double #f59e0b; padding: 40px; max-width: 600px; margin: 0 auto; background: linear-gradient(to bottom, #fefce8, #fef3c7); }
+    .certificate { border: 8px double var(--warning); padding: 40px; max-width: 600px; margin: 0 auto; background: linear-gradient(to bottom, var(--cert-bg-start), var(--cert-bg-end)); }
     .icon { font-size: 80px; }
     h1 { color: #d97706; font-size: 32px; margin: 20px 0; }
     .name { font-size: 24px; color: #92400e; margin: 20px 0; }

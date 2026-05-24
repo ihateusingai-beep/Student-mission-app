@@ -127,12 +127,12 @@ export const useGameStore = defineStore('game', () => {
   })
 
   const wheelOptions = [
-    { multiplier: 1, label: '1x', color: '#94a3b8', weight: 30 },
-    { multiplier: 1.5, label: '1.5x', color: '#22c55e', weight: 25 },
-    { multiplier: 2, label: '2x', color: '#3b82f6', weight: 20 },
-    { multiplier: 2.5, label: '2.5x', color: '#8b5cf6', weight: 12 },
-    { multiplier: 3, label: '3x', color: '#f59e0b', weight: 8 },
-    { multiplier: 0.5, label: '0.5x', color: '#ef4444', weight: 5 }
+    { multiplier: 1, label: '1x', color: 'var(--gray)', weight: 30 },
+    { multiplier: 1.5, label: '1.5x', color: 'var(--success)', weight: 25 },
+    { multiplier: 2, label: '2x', color: 'var(--primary)', weight: 20 },
+    { multiplier: 2.5, label: '2.5x', color: 'var(--purple)', weight: 12 },
+    { multiplier: 3, label: '3x', color: 'var(--warning)', weight: 8 },
+    { multiplier: 0.5, label: '0.5x', color: 'var(--danger)', weight: 5 }
   ]
 
   // ===== 證書系統 =====

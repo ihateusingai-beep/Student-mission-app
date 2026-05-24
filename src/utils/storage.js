@@ -30,7 +30,7 @@ class LocalStorage {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.USER)
       if (saved) return JSON.parse(saved)
-    } catch (e) { console.warn('Load user failed:', e) }
+    } catch (e) { console.error('Load user failed:', e) }
     return null
   }
 
@@ -162,7 +162,7 @@ class LocalStorage {
   saveUser(user) {
     try {
       localStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user))
-    } catch (e) { console.warn('Save user failed:', e) }
+    } catch (e) { console.error('Save user failed:', e) }
   }
 
   // 任務
@@ -180,14 +180,14 @@ class LocalStorage {
         return data?.tasks ?? null
       }
       return data?.tasks ?? null
-    } catch (e) { console.warn('Load tasks failed:', e) }
+    } catch (e) { console.error('Load tasks failed:', e) }
     return null
   }
 
   saveTasks(tasks) {
     try {
       localStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify({ tasks, lastDate: this.today }))
-    } catch (e) { console.warn('Save tasks failed:', e) }
+    } catch (e) { console.error('Save tasks failed:', e) }
   }
 
   // 獎勵
@@ -195,14 +195,14 @@ class LocalStorage {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.REWARDS)
       if (saved) return JSON.parse(saved)
-    } catch (e) { console.warn('Load rewards failed:', e) }
+    } catch (e) { console.error('Load rewards failed:', e) }
     return null
   }
 
   saveRewards(rewards) {
     try {
       localStorage.setItem(STORAGE_KEYS.REWARDS, JSON.stringify(rewards))
-    } catch (e) { console.warn('Save rewards failed:', e) }
+    } catch (e) { console.error('Save rewards failed:', e) }
   }
 
   // 徽章
@@ -210,14 +210,14 @@ class LocalStorage {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.BADGES)
       if (saved) return JSON.parse(saved)
-    } catch (e) { console.warn('Load badges failed:', e) }
+    } catch (e) { console.error('Load badges failed:', e) }
     return null
   }
 
   saveBadges(badges) {
     try {
       localStorage.setItem(STORAGE_KEYS.BADGES, JSON.stringify(badges))
-    } catch (e) { console.warn('Save badges failed:', e) }
+    } catch (e) { console.error('Save badges failed:', e) }
   }
 
   // 活動日誌
@@ -225,7 +225,7 @@ class LocalStorage {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.LOGS)
       if (saved) return JSON.parse(saved)
-    } catch (e) { console.warn('Load logs failed:', e) }
+    } catch (e) { console.error('Load logs failed:', e) }
     return null
   }
 
@@ -234,7 +234,7 @@ class LocalStorage {
       // 只保留最近 50 條
       const trimmed = logs.slice(0, 50)
       localStorage.setItem(STORAGE_KEYS.LOGS, JSON.stringify(trimmed))
-    } catch (e) { console.warn('Save logs failed:', e) }
+    } catch (e) { console.error('Save logs failed:', e) }
   }
 
   // 設定
@@ -242,14 +242,14 @@ class LocalStorage {
     try {
       const saved = localStorage.getItem(STORAGE_KEYS.SETTINGS)
       if (saved) return JSON.parse(saved)
-    } catch (e) { console.warn('Load settings failed:', e) }
+    } catch (e) { console.error('Load settings failed:', e) }
     return { sound: true, streak: 0, lastActiveDate: null }
   }
 
   saveSettings(settings) {
     try {
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings))
-    } catch (e) { console.warn('Save settings failed:', e) }
+    } catch (e) { console.error('Save settings failed:', e) }
   }
 
   // 更新 streak

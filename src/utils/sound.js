@@ -15,7 +15,7 @@ class SoundFX {
       this.ctx = new (window.AudioContext || window.webkitAudioContext)()
       this.initialized = true
     } catch (e) {
-      console.warn('Audio not supported:', e)
+      console.error('Audio not supported:', e)
     }
   }
 
