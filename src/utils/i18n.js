@@ -36,7 +36,9 @@ const translations = {
     // New features
     wheel: '運氣轉盤', spinWheel: '轉一轉', todayLuck: '今日運氣', multiplier: '倍', spinHistory: '轉盤記錄', cantSpin: '聽日再嚟',
     certificate: '證書', certificates: '證書牆', certificateEarned: '證書獲得', print: '列印', newFeature: '新功能解鎖',
-    stats: '數據', statsTip: '一目了然', totalPoints: '總積分', totalTasks: '總任務', weeklyTrend: '每週趨勢', categoryBreakdown: '分類比例', achievementProgress: '成就進度', achievements: '成就'
+    stats: '數據', statsTip: '一目了然', totalPoints: '總積分', totalTasks: '總任務', weeklyTrend: '每週趨勢', categoryBreakdown: '分類比例', achievementProgress: '成就進度', achievements: '成就',
+    // Parent QR view
+    parentView: '家長視圖', scanQR: '掃描 QR 碼查看孩子進度', childName: '孩子名稱', scanQRCode: '掃描 QR 碼', noQRData: '暫無 QR 數據', progress: '進度', points: '積分', streak: '連續', tasks: '任務'
   },
   'en': {
     home: 'Home', tasks: 'Tasks', rewards: 'Rewards', badges: 'Badges', admin: 'Parent', settings: 'Settings',
@@ -71,7 +73,9 @@ const translations = {
     // New features
     wheel: 'Lucky Wheel', spinWheel: 'Spin', todayLuck: "Today's Luck", multiplier: 'x', spinHistory: 'History', cantSpin: 'Come back tomorrow',
     certificate: 'Certificate', certificates: 'Certificates', certificateEarned: 'Earned', print: 'Print', newFeature: 'New Unlock',
-    stats: 'Stats', statsTip: 'Overview', totalPoints: 'Total Points', totalTasks: 'Total Tasks', weeklyTrend: 'Weekly Trend', categoryBreakdown: 'Categories', achievementProgress: 'Achievements', achievements: 'Awards'
+    stats: 'Stats', statsTip: 'Overview', totalPoints: 'Total Points', totalTasks: 'Total Tasks', weeklyTrend: 'Weekly Trend', categoryBreakdown: 'Categories', achievementProgress: 'Achievements', achievements: 'Awards',
+    // Parent QR view
+    parentView: 'Parent View', scanQR: 'Scan QR to view child progress', childName: 'Child Name', scanQRCode: 'Scan QR Code', noQRData: 'No QR data', progress: 'Progress', points: 'Points', streak: 'Streak', tasks: 'Tasks'
   },
   'zh-CN': {
     home: '首页', tasks: '任务', rewards: '商店', badges: '徽章', admin: '家长', settings: '设置',
@@ -106,7 +110,9 @@ const translations = {
     // New features
     wheel: '运气转盘', spinWheel: '转一转', todayLuck: '今日运气', multiplier: '倍', spinHistory: '转盘记录', cantSpin: '听日再来',
     certificate: '证书', certificates: '证书墙', certificateEarned: '证书获得', print: '列印', newFeature: '新功能解锁',
-    stats: '数据', statsTip: '一目了然', totalPoints: '总积分', totalTasks: '总任务', weeklyTrend: '每周趋势', categoryBreakdown: '分类比例', achievementProgress: '成就进度', achievements: '成就'
+    stats: '数据', statsTip: '一目了然', totalPoints: '总积分', totalTasks: '总任务', weeklyTrend: '每周趋势', categoryBreakdown: '分类比例', achievementProgress: '成就进度', achievements: '成就',
+    // Parent QR view
+    parentView: '家长视图', scanQR: '扫描 QR 码查看孩子进度', childName: '孩子名称', scanQRCode: '扫描 QR 码', noQRData: '暂无 QR 数据', progress: '进度', points: '积分', streak: '连续', tasks: '任务'
   }
 }
 

@@ -550,6 +550,53 @@
         </div>
       </div>
 
+      <!-- 家長視圖 -->
+      <div v-else-if="currentTab === 'parent'" class="space-y-4">
+        <div class="card bg-gradient-to-r from-green-500 to-teal-500 text-white">
+          <h2 class="font-bold text-lg">📱 {{ t('parentView') }}</h2>
+          <p class="text-sm opacity-80">{{ t('scanQR') }}</p>
+        </div>
+
+        <!-- QR Code Display -->
+        <div class="card text-center">
+          <h3 class="font-bold text-gray-700 mb-3">{{ t('scanQRCode') }}</h3>
+          <div id="qrcode" class="mx-auto bg-white p-4 rounded-xl inline-block"></div>
+          <p class="text-sm text-gray-500 mt-3">{{ t('childName') }}: {{ userStore.currentUser?.name }}</p>
+        </div>
+
+        <!-- Child Progress Summary -->
+        <div class="card">
+          <h3 class="font-bold text-gray-700 mb-3">📊 {{ t('progress') }}</h3>
+          <div class="grid grid-cols-2 gap-3">
+            <div class="p-3 bg-blue-50 rounded-xl text-center">
+              <p class="text-2xl font-bold text-blue-600">{{ userStore.userPoints }}</p>
+              <p class="text-xs text-gray-500">⭐ {{ t('points') }}</p>
+            </div>
+            <div class="p-3 bg-orange-50 rounded-xl text-center">
+              <p class="text-2xl font-bold text-orange-600">{{ userStore.settings?.streak || 0 }}</p>
+              <p class="text-xs text-gray-500">🔥 {{ t('streak') }}</p>
+            </div>
+            <div class="p-3 bg-green-50 rounded-xl text-center">
+              <p class="text-2xl font-bold text-green-600">{{ userStore.completedCount }}</p>
+              <p class="text-xs text-gray-500">✅ {{ t('tasks') }}</p>
+            </div>
+            <div class="p-3 bg-purple-50 rounded-xl text-center">
+              <p class="text-2xl font-bold text-purple-600">{{ userStore.unlockedBadges.length }}</p>
+              <p class="text-xs text-gray-500">🏅 {{ t('badgesUnlocked') }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- QR Code Instructions -->
+        <div class="card bg-gradient-to-r from-gray-50 to-gray-100">
+          <h3 class="font-bold text-gray-700 mb-2">💡 {{ t('scanQR') }}</h3>
+          <p class="text-sm text-gray-600">{{ t('scanQRCode') }}</p>
+          <div class="mt-3 p-3 bg-white rounded-lg">
+            <p class="text-xs text-gray-500">📱 讓家長掃描上方 QR 碼，即可看到孩子的即時進度</p>
+          </div>
+        </div>
+      </div>
+
       <!-- 裝飾主題 -->
       <div v-else-if="currentTab === 'themes'" class="space-y-4">
         <div class="card bg-gradient-to-r from-pink-500 to-rose-500 text-white">
@@ -763,7 +810,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import { useUserStore } from './stores/user'
 import { useGameStore } from './stores/game'
 import { sfx } from './utils/sound'
@@ -803,6 +850,7 @@ const abilityUpKey = ref('')
 const showSynergy = ref(false)
 const synergyAmount = ref(0)
 const showConfetti = ref(false)
+const qrGenerated = ref(false)
 
 // Confetti colors
 const confettiColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181', '#aa96da', '#fcbad3']
@@ -854,6 +902,46 @@ function speakTask(text) {
   }
 }
 
+// Watch for parent tab changes to generate QR
+watch(currentTab, (newTab) => {
+  if (newTab === 'parent') {
+    generateQRCode()
+  }
+})
+
+// Generate QR code with child progress data
+function generateQRCode() {
+  if (typeof QRCode === 'undefined') {
+    console.warn('QRCode library not loaded')
+    return
+  }
+  
+  const qrData = JSON.stringify({
+    name: userStore.currentUser?.name || 'Child',
+    points: userStore.userPoints,
+    streak: userStore.settings?.streak || 0,
+    completedTasks: userStore.completedCount,
+    badges: userStore.unlockedBadges.length,
+    timestamp: new Date().toISOString()
+  })
+  
+  const container = document.getElementById('qrcode')
+  if (container) {
+    container.innerHTML = ''
+    QRCode.toCanvas(container, qrData, {
+      width: 200,
+      margin: 2,
+      color: {
+        dark: '#2563eb',
+        light: '#ffffff'
+      }
+    }, (error) => {
+      if (error) console.error('QR generation error:', error)
+    })
+  }
+  qrGenerated.value = true
+}
+
 onMounted(() => {
   const mq = window.matchMedia('(prefers-reduced-motion: reduce)')
   reducedMotion.value = mq.matches
@@ -873,6 +961,7 @@ const tabs = [
   { id: 'certificates', icon: '📜' },
   { id: 'stats', icon: '📊' },
   { id: 'themes', icon: '🎨' },
+  { id: 'parent', icon: '📱' },
   { id: 'admin', icon: '🔧' },
   { id: 'settings', icon: '⚙️' },
 ]
