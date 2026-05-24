@@ -124,10 +124,10 @@ export function SettingsScreen() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>💾 {t('dataManage')}</Text>
         <View style={styles.buttonRow}>
-          <TouchableOpacity style={styles.exportButton} onPress={handleExportData}>
+          <TouchableOpacity style={styles.exportButton} accessibilityLabel={t('exportData')} onPress={handleExportData}>
             <Text style={styles.buttonText}>📤 {t('exportData')}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={[styles.exportButton, styles.resetButton]} onPress={handleResetData}>
+          <TouchableOpacity style={[styles.exportButton, styles.resetButton]} accessibilityLabel={t('resetData')} onPress={handleResetData}>
             <Text style={styles.buttonText}>🔄 {t('resetData')}</Text>
           </TouchableOpacity>
         </View>

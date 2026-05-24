@@ -3,7 +3,7 @@ import { View, Text, ScrollView, TextInput, TouchableOpacity, StyleSheet, Alert 
 import { useUserStore } from '../stores/userStore';
 import { useGameStore } from '../stores/gameStore';
 import { useI18n } from '../i18n/I18nContext';
-import { calculateWeeklySummary, formatWeeklySummaryText } from '../services/WeeklySummary';
+import { calculateWeeklySummary, formatWeeklySummaryText } from '../services/WeeklyReview';
 import { calculateHeroReview, formatHeroReviewText, HeroReviewData } from '../services/WeeklyReview';
 import { HabitCalendar } from '../components/HabitCalendar';
 import { SelfAssessment } from '../components/SelfAssessment';

@@ -30,6 +30,7 @@ export function TaskCard({ task, onComplete }: TaskCardProps) {
         style={[styles.button, task.completedToday && styles.completedButton]}
         onPress={() => onComplete(task.id)}
         disabled={task.completedToday}
+        accessibilityLabel={task.completedToday ? 'completed' : 'mark complete'}
       >
         <Text style={styles.buttonText}>
           {task.completedToday ? '✅' : '📍'}

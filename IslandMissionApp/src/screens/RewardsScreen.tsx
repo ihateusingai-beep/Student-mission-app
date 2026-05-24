@@ -107,6 +107,7 @@ export function RewardsScreen() {
                 style={[styles.claimButton, !canClaim && styles.disabledButton]}
                 onPress={() => handleClaim(item.id)}
                 disabled={!canClaim}
+                accessibilityLabel={!item.available ? 'unavailable' : !canClaim ? 'not enough points' : 'claim reward'}
               >
                 <Text style={styles.claimButtonText}>
                   {!item.available ? '❌' : !canClaim ? '💸' : '🎁'}

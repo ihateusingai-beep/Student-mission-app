@@ -57,6 +57,7 @@ export function PetCard({ pet, onFeed, onPlay, onPress }: PetCardProps) {
           style={[styles.actionButton, pet.hunger >= 100 && styles.disabledButton]}
           onPress={onFeed}
           disabled={pet.hunger >= 100}
+          accessibilityLabel={t('feed')}
         >
           <Text style={styles.actionText}>🍖 {t('feed')}</Text>
         </TouchableOpacity>
@@ -64,6 +65,7 @@ export function PetCard({ pet, onFeed, onPlay, onPress }: PetCardProps) {
           style={[styles.actionButton, pet.happiness >= 100 && styles.disabledButton]}
           onPress={onPlay}
           disabled={pet.happiness >= 100}
+          accessibilityLabel={t('play')}
         >
           <Text style={styles.actionText}>🎾 {t('play')}</Text>
         </TouchableOpacity>
