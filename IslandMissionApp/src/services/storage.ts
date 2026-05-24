@@ -35,14 +35,14 @@ class Storage {
     try {
       const saved = await AsyncStorage.getItem(STORAGE_KEYS.USER);
       if (saved) return JSON.parse(saved);
-    } catch (e) { console.warn('Load user failed:', e); }
+    } catch (e) { console.warn('// silent skip: load user failed:', e); }
     return null;
   }
 
   async saveUser(user: any): Promise<void> {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.USER, JSON.stringify(user));
-    } catch (e) { console.warn('Save user failed:', e); }
+    } catch (e) { console.warn('// silent skip: save user failed:', e); }
   }
 
   async loadLanguage(): Promise<string> {
@@ -175,49 +175,49 @@ class Storage {
         return data?.tasks ?? null;
       }
       return data?.tasks ?? null;
-    } catch (e) { console.warn('Load tasks failed:', e); }
+    } catch (e) { console.warn('// silent skip: load tasks failed:', e); }
     return null;
   }
 
   async saveTasks(tasks: any[]): Promise<void> {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.TASKS, JSON.stringify({ tasks, lastDate: this.today }));
-    } catch (e) { console.warn('Save tasks failed:', e); }
+    } catch (e) { console.warn('// silent skip: save tasks failed:', e); }
   }
 
   async loadRewards(): Promise<any[] | null> {
     try {
       const saved = await AsyncStorage.getItem(STORAGE_KEYS.REWARDS);
       if (saved) return JSON.parse(saved);
-    } catch (e) { console.warn('Load rewards failed:', e); }
+    } catch (e) { console.warn('// silent skip: load rewards failed:', e); }
     return null;
   }
 
   async saveRewards(rewards: any[]): Promise<void> {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.REWARDS, JSON.stringify(rewards));
-    } catch (e) { console.warn('Save rewards failed:', e); }
+    } catch (e) { console.warn('// silent skip: save rewards failed:', e); }
   }
 
   async loadBadges(): Promise<any[] | null> {
     try {
       const saved = await AsyncStorage.getItem(STORAGE_KEYS.BADGES);
       if (saved) return JSON.parse(saved);
-    } catch (e) { console.warn('Load badges failed:', e); }
+    } catch (e) { console.warn('// silent skip: load badges failed:', e); }
     return null;
   }
 
   async saveBadges(badges: any[]): Promise<void> {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.BADGES, JSON.stringify(badges));
-    } catch (e) { console.warn('Save badges failed:', e); }
+    } catch (e) { console.warn('// silent skip: save badges failed:', e); }
   }
 
   async loadLogs(): Promise<any[] | null> {
     try {
       const saved = await AsyncStorage.getItem(STORAGE_KEYS.LOGS);
       if (saved) return JSON.parse(saved);
-    } catch (e) { console.warn('Load logs failed:', e); }
+    } catch (e) { console.warn('// silent skip: load logs failed:', e); }
     return null;
   }
 
@@ -225,21 +225,21 @@ class Storage {
     try {
       const trimmed = logs.slice(0, 50);
       await AsyncStorage.setItem(STORAGE_KEYS.LOGS, JSON.stringify(trimmed));
-    } catch (e) { console.warn('Save logs failed:', e); }
+    } catch (e) { console.warn('// silent skip: save logs failed:', e); }
   }
 
   async loadSettings(): Promise<any> {
     try {
       const saved = await AsyncStorage.getItem(STORAGE_KEYS.SETTINGS);
       if (saved) return JSON.parse(saved);
-    } catch (e) { console.warn('Load settings failed:', e); }
+    } catch (e) { console.warn('// silent skip: load settings failed:', e); }
     return { sound: true, streak: 0, lastActiveDate: null };
   }
 
   async saveSettings(settings: any): Promise<void> {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings));
-    } catch (e) { console.warn('Save settings failed:', e); }
+    } catch (e) { console.warn('// silent skip: save settings failed:', e); }
   }
 
   async updateStreak(): Promise<number> {

@@ -5,7 +5,7 @@ import { useGameStore } from '../stores/gameStore';
 import { WeeklyChart } from '../components/WeeklyChart';
 import { CategoryPieChart } from '../components/CategoryPieChart';
 import { useI18n } from '../i18n/I18nContext';
-import { calculateWeeklySummary, calculateHeroReview, getISOWeekNumber, getLevelTitle } from '../services/WeeklyReview';
+import { calculateWeeklySummary, calculateHeroReview, getISOWeekNumber } from '../services/WeeklyReview';
 
 interface WeeklyReviewScreenProps {
   navigation?: any;

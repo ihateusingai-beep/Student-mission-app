@@ -16,11 +16,6 @@ function getDateString(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-function getDayOfWeek(dateStr: string): number {
-  const date = new Date(dateStr);
-  return date.getDay() || 7;
-}
-
 export function WeeklyChart({ data, title, color = '#3b82f6' }: WeeklyChartProps) {
   const today = new Date();
   const weekData: number[] = [];

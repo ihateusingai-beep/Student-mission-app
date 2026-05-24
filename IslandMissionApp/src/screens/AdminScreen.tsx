@@ -174,6 +174,7 @@ export function AdminScreen() {
               <View style={styles.pendingActions}>
                 <TouchableOpacity
                   style={styles.approveButton}
+                  accessibilityLabel="approve"
                   onPress={() => {
                     userStore.approvePendingReward(pending.id);
                     Alert.alert('✅', '已確認獎勵');
@@ -183,6 +184,7 @@ export function AdminScreen() {
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.rejectButton}
+                  accessibilityLabel="reject"
                   onPress={() => {
                     userStore.rejectPendingReward(pending.id);
                   }}
@@ -225,7 +227,7 @@ export function AdminScreen() {
             onChangeText={setRewardReason}
             placeholder={t('reason')}
           />
-          <TouchableOpacity style={styles.addButton} onPress={addRewardPoints}>
+          <TouchableOpacity style={styles.addButton} accessibilityLabel={t('addPoints')} onPress={addRewardPoints}>
             <Text style={styles.addButtonText}>➤</Text>
           </TouchableOpacity>
         </View>
@@ -259,7 +261,7 @@ export function AdminScreen() {
           >
             <Text>{newTask.category}</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.addButton} onPress={addNewTask}>
+          <TouchableOpacity style={styles.addButton} accessibilityLabel={t('addTask')} onPress={addNewTask}>
             <Text style={styles.addButtonText}>+</Text>
           </TouchableOpacity>
         </View>
@@ -287,7 +289,7 @@ export function AdminScreen() {
             onChangeText={(v) => setNewReward({ ...newReward, icon: v })}
             placeholder="🎁"
           />
-          <TouchableOpacity style={styles.addButton} onPress={addNewReward}>
+          <TouchableOpacity style={styles.addButton} accessibilityLabel={t('addReward')} onPress={addNewReward}>
             <Text style={styles.addButtonText}>+</Text>
           </TouchableOpacity>
         </View>
@@ -305,11 +307,11 @@ export function AdminScreen() {
             maxLength={4}
             secureTextEntry
           />
-          <TouchableOpacity style={styles.pinButton} onPress={savePin}>
+          <TouchableOpacity style={styles.pinButton} accessibilityLabel={t('savePin')} onPress={savePin}>
             <Text style={styles.pinButtonText}>✓</Text>
           </TouchableOpacity>
           {userStore.settings?.adminPin && (
-            <TouchableOpacity style={styles.clearPinButton} onPress={clearPin}>
+            <TouchableOpacity style={styles.clearPinButton} accessibilityLabel={t('clearPin')} onPress={clearPin}>
               <Text style={styles.clearPinText}>✕</Text>
             </TouchableOpacity>
           )}
