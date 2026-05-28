@@ -912,7 +912,7 @@ watch(currentTab, (newTab) => {
 // Generate QR code with child progress data
 function generateQRCode() {
   if (typeof QRCode === 'undefined') {
-    console.warn('QRCode library not loaded')
+    console.error('QRCode library not loaded')
     return
   }
   
