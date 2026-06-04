@@ -905,6 +905,11 @@ const showConfetti = ref(false)
 const showCameraModal = ref(false)
 const qrGenerated = ref(false)
 
+// Camera state
+const cameraTaskId = ref(null)
+const cameraStream = ref(null)
+const cameraRef = ref(null)
+
 // Confetti colors
 const confettiColors = ['#ff6b6b', '#4ecdc4', '#ffe66d', '#95e1d3', '#f38181', '#aa96da', '#fcbad3']
 
@@ -1152,11 +1157,6 @@ function completeTaskWithFX(taskId) {
   // 打開相機让学生拍照
   openCameraForTask(taskId)
 }
-
-// 相機狀態
-const cameraTaskId = ref(null)
-const cameraStream = ref(null)
-const cameraRef = ref(null)
 
 function openCameraForTask(taskId) {
   cameraTaskId.value = taskId
