@@ -31,11 +31,12 @@ export const useGameStore = defineStore('game', () => {
 
   // 寵物模板
   const petTemplates = [
-    { id: 'cat', name: '🐱 小貓', emoji: '🐱' },
-    { id: 'dog', name: '🐕 小狗', emoji: '🐕' },
-    { id: 'hamster', name: '🐹 倉鼠', emoji: '🐹' },
-    { id: 'rabbit', name: '🐰 兔仔', emoji: '🐰' },
-    { id: 'chick', name: '🐣 雞仔', emoji: '🐣' }
+    { id: 'cat',    name: '🐱 小貓',  emoji: '🐱', image: 'cat'    },
+    { id: 'dog',    name: '🐕 小狗',  emoji: '🐕', image: 'dog'    },
+    { id: 'rabbit', name: '🐰 兔仔',  emoji: '🐰', image: 'rabbit' },
+    { id: 'bear',   name: '🐻 小熊',  emoji: '🐻', image: 'bear'   },
+    { id: 'frog',   name: '🐸 青蛙',  emoji: '🐸', image: 'frog'   },
+    { id: 'dragon', name: '🐉 小龍',  emoji: '🐉', image: 'dragon' }
   ]
 
   // 寵物運行時狀態 (餓飽、開心、經驗等) - 使用 ref 直接存放可變物件
@@ -84,6 +85,7 @@ export const useGameStore = defineStore('game', () => {
       name: template.name,
       emoji: template.emoji,
       avatar: evolutionEmoji,
+      image: `/assets/pets/stage${level}/${template.image}.jpg`,
       type: template.id,
       hunger: petState.value.hunger,
       happiness: petState.value.happiness,
@@ -138,14 +140,14 @@ export const useGameStore = defineStore('game', () => {
   // ===== 證書系統 =====
   const certificates = ref([])
   const certificateTemplates = [
-    { id: 'first_task', name: '初戰告捷', desc: '完成第一個任務', icon: '🎯', requirement: 'tasks_1' },
-    { id: 'streak_7', name: '連續達人', desc: '連續7日達成', icon: '🔥', requirement: 'streak_7' },
-    { id: 'streak_30', name: '一個月坚持', desc: '連續30日達成', icon: '🏆', requirement: 'streak_30' },
-    { id: 'points_100', name: '點數達人', desc: '累積100點', icon: '💰', requirement: 'points_100' },
-    { id: 'points_500', name: '點數英雄', desc: '累積500點', icon: '⭐', requirement: 'points_500' },
-    { id: 'badges_5', name: '徽章獵人', desc: '收集5個徽章', icon: '🏅', requirement: 'badges_5' },
-    { id: 'all_categories', name: '全能挑戰者', desc: '完成所有類別任務', icon: '🌟', requirement: 'all_categories' },
-    { id: 'pet_master', name: '寵物大師', desc: '寵物進化到Lv.3', icon: '🐲', requirement: 'pet_lv3' }
+    { id: 'first_task',    name: '初戰告捷',   desc: '完成第一個任務',      icon: '🎯', image: 'first_task',    requirement: 'tasks_1' },
+    { id: 'streak_7',      name: '連續達人',   desc: '連續7日達成',         icon: '🔥', image: 'streak_7',      requirement: 'streak_7' },
+    { id: 'streak_30',     name: '一個月坚持', desc: '連續30日達成',        icon: '🏆', image: 'streak_30',     requirement: 'streak_30' },
+    { id: 'points_100',    name: '點數達人',   desc: '累積100點',           icon: '💰', image: 'points_100',    requirement: 'points_100' },
+    { id: 'points_500',    name: '點數英雄',   desc: '累積500點',           icon: '⭐', image: 'points_500',    requirement: 'points_500' },
+    { id: 'badges_5',      name: '徽章獵人',   desc: '收集5個徽章',         icon: '🏅', image: 'badges_5',      requirement: 'badges_5' },
+    { id: 'all_categories',name: '全能挑戰者', desc: '完成所有類別任務',     icon: '🌟', image: 'all_categories',requirement: 'all_categories' },
+    { id: 'pet_master',    name: '寵物大師',   desc: '寵物進化到Lv.3',      icon: '🐲', image: 'pet_master',    requirement: 'pet_lv3' }
   ]
 
   // ===== 計算屬性 =====

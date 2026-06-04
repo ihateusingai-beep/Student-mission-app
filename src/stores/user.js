@@ -13,12 +13,12 @@ const DEFAULT_TASKS = [
 ]
 
 const DEFAULT_REWARDS = [
-  { id: 'r1', name: 'Line 手機儲值', cost: 290, available: true, icon: '💰' },
-  { id: 'r2', name: '單一個游加1小時', cost: 100, available: true, icon: '🎮' },
-  { id: 'r3', name: '單一個游加15分鐘', cost: 15, available: true, icon: '🎮' },
-  { id: 'r4', name: '荒野月卡(普通)', cost: 800, available: true, icon: '🏕️' },
-  { id: 'r5', name: '荒野月卡(高級)', cost: 5000, available: false, icon: '🏕️' },
-  { id: 'r6', name: '樂高盒組(五千元以內)', cost: 5000, available: false, icon: '🧱' },
+  { id: 'r1', name: 'Line 手機儲值', cost: 290, available: true, icon: '💰', image: 'treasure' },
+  { id: 'r2', name: '單一個游加1小時', cost: 100, available: true, icon: '🎮', image: 'gift_box' },
+  { id: 'r3', name: '單一個游加15分鐘', cost: 15, available: true, icon: '🎮', image: 'lollipop' },
+  { id: 'r4', name: '荒野月卡(普通)', cost: 800, available: true, icon: '🏕️', image: 'flowers' },
+  { id: 'r5', name: '荒野月卡(高級)', cost: 5000, available: false, icon: '🏕️', image: 'icecream' },
+  { id: 'r6', name: '樂高盒組(五千元以內)', cost: 5000, available: false, icon: '🧱', image: 'treasure' },
 ]
 
 const DEFAULT_BADGES = [

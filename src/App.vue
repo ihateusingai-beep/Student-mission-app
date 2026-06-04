@@ -51,7 +51,7 @@
         <div v-if="gameStore.pet" class="card bg-gradient-to-r from-pink-400 to-purple-500 text-white" @click="currentTab = 'pet'">
           <div class="flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <span class="text-3xl">{{ gameStore.pet.avatar }}</span>
+              <img :src="gameStore.pet.image" class="w-12 h-12 object-contain" :alt="gameStore.pet.name">
               <div>
                 <p class="font-bold">{{ gameStore.pet.name }}</p>
                 <p class="text-sm">❤️ {{ gameStore.pet.happiness }}/100 | ⭐ {{ gameStore.pet.level }}</p>
@@ -192,7 +192,7 @@
           </div>
           <div v-for="reward in userStore.rewards" :key="reward.id" :class="[!reward.available || reward.cost > userStore.userPoints ? 'opacity-40 grayscale' : 'hover:scale-[0.99]', reward.justClaimed ? (reducedMotion ? 'border-2 border-purple-400' : 'animate-bounce border-2 border-purple-400') : '']">
             <div class="flex items-center gap-3">
-              <span class="text-3xl">{{ reward.icon }}</span>
+              <img :src="`/assets/rewards/${reward.image}.jpg`" class="w-12 h-12 object-contain" :alt="reward.name">
               <div>
                 <p class="font-bold">{{ reward.name }}</p>
                 <p class="text-sm text-gray-500">{{ reward.cost }} {{ t('pointsLabel') }}</p>
@@ -218,7 +218,8 @@
         </div>
         <div class="grid grid-cols-2 gap-3">
           <div v-for="badge in userStore.badges" :key="badge.id" class="card text-center transition-all duration-300" :class="badge.unlocked ? 'bg-gradient-to-b from-yellow-100 to-yellow-300 border-2 border-yellow-400 scale-105' : 'bg-gray-50'">
-            <span class="text-4xl block" :class="badge.justUnlocked && !reducedMotion ? 'animate-bounce' : ''">{{ badge.icon }}</span>
+            <img v-if="badge.image" :src="`/assets/badges/${badge.image}.jpg`" class="w-12 h-12 mx-auto object-contain block" :class="badge.justUnlocked && !reducedMotion ? 'animate-bounce' : ''" :alt="badge.name">
+            <span v-else class="text-4xl block" :class="badge.justUnlocked && !reducedMotion ? 'animate-bounce' : ''">{{ badge.icon }}</span>
             <p class="font-bold mt-2 text-sm">{{ badge.name }}</p>
             <p class="text-xs text-gray-500">{{ badge.desc }}</p>
             <div class="mt-2">
@@ -274,7 +275,7 @@
       <div v-else-if="currentTab === 'pet'" class="space-y-4">
         <div v-if="gameStore.pet" class="card text-center">
           <div class="relative inline-block mx-auto">
-            <span class="text-8xl block" :class="reducedMotion ? '' : 'animate-bounce'">{{ gameStore.pet.avatar }}</span>
+            <img :src="gameStore.pet.image" class="w-32 h-32 mx-auto object-contain block" :class="reducedMotion ? '' : 'animate-bounce'" :alt="gameStore.pet.name">
             <span v-if="gameStore.pet.happiness >= 80" class="absolute -top-2 -right-2 text-2xl">✨</span>
           </div>
           <h2 class="text-2xl font-bold mt-4">{{ gameStore.pet.name }}</h2>
@@ -314,7 +315,7 @@
           <p class="text-sm text-gray-500 mb-4">{{ t('adoptPetTip') }}</p>
           <div class="grid grid-cols-2 gap-2">
             <button v-for="type in petTypes" :key="type.id" @click="adoptPet(type)" class="card hover:scale-105 transition-all" :aria-label="'領養' + type.name">
-              <span class="text-3xl">{{ type.avatar }}</span>
+            <img :src="`/assets/pets/stage1/${type.image}.jpg`" class="w-16 h-16 mx-auto object-contain block" :alt="type.name">
               <p class="font-bold text-sm">{{ type.name }}</p>
             </button>
           </div>
@@ -462,7 +463,8 @@
 
         <div class="grid grid-cols-2 gap-3">
           <div v-for="cert in gameStore.certificateTemplates" :key="cert.id" class="card text-center transition-all duration-300" :class="gameStore.certificates.includes(cert.id) ? 'bg-gradient-to-b from-yellow-100 to-amber-200 border-2 border-yellow-400' : 'bg-gray-50 opacity-50'">
-            <span class="text-3xl block">{{ cert.icon }}</span>
+            <img v-if="cert.image" :src="`/assets/badges/${cert.image}.jpg`" class="w-12 h-12 mx-auto object-contain block" :alt="cert.name">
+            <span v-else class="text-3xl block">{{ cert.icon }}</span>
             <p class="font-bold mt-2 text-sm">{{ cert.name }}</p>
             <p class="text-xs text-gray-500">{{ cert.desc }}</p>
             <span v-if="gameStore.certificates.includes(cert.id)" class="text-green-500 text-lg">✅</span>
@@ -967,10 +969,12 @@ const tabs = [
 ]
 
 const petTypes = [
-  { id: 'cat', name: '貓貓', avatar: '🐱' },
-  { id: 'dog', name: '狗狗', avatar: '🐶' },
-  { id: 'hamster', name: '倉鼠', avatar: '🐹' },
-  { id: 'rabbit', name: '兔兔', avatar: '🐰' },
+  { id: 'cat',    name: '🐱 小貓',  image: 'cat'    },
+  { id: 'dog',    name: '🐕 小狗',  image: 'dog'    },
+  { id: 'rabbit', name: '🐰 兔仔',  image: 'rabbit' },
+  { id: 'bear',   name: '🐻 小熊',  image: 'bear'   },
+  { id: 'frog',   name: '🐸 青蛙',  image: 'frog'   },
+  { id: 'dragon', name: '🐉 小龍',  image: 'dragon' },
 ]
 
 const themes = [
