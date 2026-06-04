@@ -2,7 +2,7 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
 export default defineConfig({
-  base: '/Student-mission-app/',
+  base: '/dist/',
   plugins: [vue()],
   server: {
     host: true,
