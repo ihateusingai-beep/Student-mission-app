@@ -84,6 +84,8 @@ export const useUserStore = defineStore('user', () => {
   const badges = ref([])
   const activityLog = ref([])
   const settings = ref({ sound: true, streak: 0, adminPin: null })
+  // 待家長確認的記錄
+  const pendingCompletions = ref([])
 
   const userPoints = computed(() => currentUser.value?.points || 0)
   const todayTasks = computed(() => tasks.value)
@@ -144,6 +146,63 @@ export const useUserStore = defineStore('user', () => {
     settings.value = savedSettings || { sound: true, streak: 0, adminPin: null }
 
     settings.value.streak = storage.updateStreak()
+
+    // 載入待家長確認記錄
+    pendingCompletions.value = storage.loadPendingCompletions()
+  }
+
+  // 創建待確認記錄（不打分）
+  function createPendingCompletion(taskId) {
+    const task = tasks.value.find(t => t.id === taskId)
+    if (task && !task.completedToday) {
+      // 不標記完成，不加分，只建立待確認記錄
+      const record = {
+        id: 'pc_' + Date.now(),
+        taskId,
+        taskName: task.name,
+        taskCategory: task.category,
+        reward: task.reward,
+        photo: null,       // 家長拍的相片
+        studentPhoto: null, // 學生的相（可選）
+        status: 'pending',  // pending | confirmed | rejected
+        createdAt: new Date().toISOString()
+      }
+      pendingCompletions.value.push(record)
+      storage.savePendingCompletions(pendingCompletions.value)
+      return record
+    }
+    return null
+  }
+
+  // 家長確認後正式完成任務
+  function confirmCompletion(recordId, photoBase64 = null) {
+    const record = pendingCompletions.value.find(r => r.id === recordId)
+    if (!record || record.status !== 'pending') return 0
+
+    record.status = 'confirmed'
+    if (photoBase64) record.photo = photoBase64
+
+    const task = tasks.value.find(t => t.id === record.taskId)
+    if (task) {
+      task.completedToday = true
+      task.totalCount++
+      currentUser.value.points += record.reward
+      addLog('完成任務', record.taskName, record.reward)
+      checkBadges(record.taskCategory)
+    }
+
+    storage.savePendingCompletions(pendingCompletions.value)
+    saveAll()
+    return record.reward
+  }
+
+  // 家長否決
+  function rejectCompletion(recordId) {
+    const record = pendingCompletions.value.find(r => r.id === recordId)
+    if (record && record.status === 'pending') {
+      record.status = 'rejected'
+      storage.savePendingCompletions(pendingCompletions.value)
+    }
   }
 
   function completeTask(taskId) {
@@ -280,6 +339,7 @@ export const useUserStore = defineStore('user', () => {
     badges,
     activityLog,
     settings,
+    pendingCompletions,
     userPoints,
     todayTasks,
     unlockedBadges,
@@ -288,6 +348,9 @@ export const useUserStore = defineStore('user', () => {
     remainingTasks,
     init,
     completeTask,
+    createPendingCompletion,
+    confirmCompletion,
+    rejectCompletion,
     claimReward,
     addTask,
     removeTask,

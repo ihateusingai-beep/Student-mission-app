@@ -559,6 +559,39 @@
           <p class="text-sm opacity-80">{{ t('scanQR') }}</p>
         </div>
 
+        <!-- 待確認記錄 -->
+        <div v-if="userStore.pendingCompletions.filter(r => r.status === 'pending').length > 0" class="card">
+          <h3 class="font-bold text-gray-700 mb-3 flex items-center gap-2">
+            ⏳ {{ t('pendingApprovals') || '待確認' }}
+            <span class="bg-yellow-500 text-white text-xs px-2 py-1 rounded-full">
+              {{ userStore.pendingCompletions.filter(r => r.status === 'pending').length }}
+            </span>
+          </h3>
+          <div class="space-y-3">
+            <div v-for="record in userStore.pendingCompletions.filter(r => r.status === 'pending')" :key="record.id" class="p-3 bg-yellow-50 rounded-xl border border-yellow-200">
+              <div class="flex justify-between items-start mb-2">
+                <div>
+                  <p class="font-bold text-gray-800">{{ record.taskName }}</p>
+                  <p class="text-xs text-gray-500">+{{ record.reward }} 分｜{{ new Date(record.createdAt).toLocaleString('zh-HK') }}</p>
+                </div>
+                <span class="text-sm bg-yellow-200 text-yellow-800 px-2 py-1 rounded-full">待確認</span>
+              </div>
+              <!-- 學生拍的相片 -->
+              <div v-if="record.studentPhoto" class="mb-2">
+                <img :src="record.studentPhoto" class="w-24 h-24 object-cover rounded-lg" alt="學生相片" />
+              </div>
+              <div class="flex gap-2">
+                <button @click="confirmRecord(record.id)" class="flex-1 btn bg-green-500 text-white py-2 rounded-xl font-bold" aria-label="確認">
+                  ✅ 確認
+                </button>
+                <button @click="rejectRecord(record.id)" class="flex-1 btn bg-red-500 text-white py-2 rounded-xl font-bold" aria-label="否決">
+                  ❌ 否決
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
         <!-- QR Code Display -->
         <div class="card text-center">
           <h3 class="font-bold text-gray-700 mb-3">{{ t('scanQRCode') }}</h3>
@@ -808,6 +841,23 @@
 
     <!-- Confetti Container -->
     <div v-if="showConfetti" id="confetti-container" class="fixed inset-0 pointer-events-none z-50 overflow-hidden"></div>
+
+    <!-- Camera Modal -->
+    <transition name="fade">
+      <div v-if="showCameraModal" class="fixed inset-0 bg-black/80 flex flex-col z-50">
+        <div class="flex justify-between items-center p-4 text-white">
+          <p class="font-bold">📸 拍照確認</p>
+          <button @click="cancelCamera" class="text-2xl" aria-label="取消">✕</button>
+        </div>
+        <div class="flex-1 flex items-center justify-center">
+          <video ref="cameraRef" autoplay playsinline class="w-full max-h-full object-cover"></video>
+        </div>
+        <div class="p-6 flex gap-4">
+          <button @click="cancelCamera" class="flex-1 btn bg-gray-600 text-white py-4 rounded-xl text-lg" aria-label="取消">✕ 取消</button>
+          <button @click="captureAndSubmit" class="flex-1 btn bg-green-500 text-white py-4 rounded-xl text-lg font-bold" aria-label="拍照並提交">📸 拍照</button>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -852,6 +902,7 @@ const abilityUpKey = ref('')
 const showSynergy = ref(false)
 const synergyAmount = ref(0)
 const showConfetti = ref(false)
+const showCameraModal = ref(false)
 const qrGenerated = ref(false)
 
 // Confetti colors
@@ -1097,59 +1148,93 @@ function logActionName(action) {
 function completeTaskWithFX(taskId) {
   const task = userStore.tasks.find(t => t.id === taskId)
   if (!task || task.completedToday) return
-  const reward = userStore.completeTask(taskId)
-  if (reward > 0) {
-    const category = task.category
-    const abilityMap = { '運動': 'strength', '學校': 'school', '學習': 'intelligence', '家務': 'diligence', '習慣': 'discipline', '自訂': 'strength' }
-    const abilityKey = abilityMap[category] || 'strength'
-    const oldAbilityValue = gameStore.abilities[abilityKey]?.value || 0
-    gameStore.addAbilityXp(abilityKey, Math.ceil(reward / 2))
-    const newAbilityValue = gameStore.abilities[abilityKey]?.value || 0
 
-    const leveledUp = gameStore.addPetExp(5)
+  // 打開相機让学生拍照
+  openCameraForTask(taskId)
+}
+
+// 相機狀態
+const cameraTaskId = ref(null)
+const cameraStream = ref(null)
+const cameraRef = ref(null)
+
+function openCameraForTask(taskId) {
+  cameraTaskId.value = taskId
+  showCameraModal.value = true
+  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
+    .then(stream => {
+      cameraStream.value = stream
+      nextTick(() => {
+        if (cameraRef.value) {
+          cameraRef.value.srcObject = stream
+        }
+      })
+    })
+    .catch(err => {
+      console.error('Camera error:', err)
+      alert('無法開啟相機，請檢查權限設定')
+      showCameraModal.value = false
+    })
+}
+
+function captureAndSubmit() {
+  if (!cameraRef.value || !cameraTaskId.value) return
+
+  const canvas = document.createElement('canvas')
+  canvas.width = cameraRef.value.videoWidth || 640
+  canvas.height = cameraRef.value.videoHeight || 480
+  const ctx = canvas.getContext('2d')
+  ctx.drawImage(cameraRef.value, 0, 0)
+
+  const dataUrl = canvas.toDataURL('image/jpeg', 0.7)
+
+  // 停止相機
+  stopCamera()
+
+  // 建立待確認記錄
+  const record = userStore.createPendingCompletion(cameraTaskId.value)
+  if (record) {
+    record.studentPhoto = dataUrl
+    storage.savePendingCompletions(userStore.pendingCompletions)
     sfx.playTaskComplete()
+    alert('📸 相片已拍！等待家長確認後即可獲得 +' + userStore.tasks.find(t => t.id === cameraTaskId.value)?.reward + ' 分')
+  } else {
+    alert('建立記錄失敗')
+  }
+
+  cameraTaskId.value = null
+}
+
+function cancelCamera() {
+  stopCamera()
+  cameraTaskId.value = null
+  showCameraModal.value = false
+}
+
+function stopCamera() {
+  if (cameraStream.value) {
+    cameraStream.value.getTracks().forEach(track => track.stop())
+    cameraStream.value = null
+  }
+}
+
+function confirmRecord(recordId) {
+  const reward = userStore.confirmCompletion(recordId)
+  if (reward > 0) {
+    sfx.playStreakBonus()
     showPointsAnimation(reward)
     triggerConfetti()
-
-    if (leveledUp) {
-      sfx.playEvolve()
-      showPetEvolvedModal()
-    } else if (newAbilityValue > oldAbilityValue && newAbilityValue % 10 === 0) {
-      sfx.playLevelUp()
-      showAbilityUpFeedback(abilityKey, newAbilityValue)
-    }
-
-    const badge = userStore.badges.find(b => !b.unlocked && b.progress === b.max - 1)
-    if (badge) {
-      setTimeout(() => {
-        badge.justUnlocked = true
-        openBadgeModal(badge.name, badge.icon)
-        sfx.playBadgeUnlock()
-        setTimeout(() => { badge.justUnlocked = false }, 2000)
-      }, 500)
-    }
-
-    const newCerts = gameStore.checkCertificates({
-      totalPoints: userStore.userPoints,
-      currentStreak: userStore.settings?.streak || 0,
-      totalTasks: userStore.tasks.reduce((sum, t) => sum + (t.totalCount || 0), 0),
-      badges: userStore.badges.filter(b => b.unlocked).length,
-      pet: gameStore.pet
-    })
-    if (newCerts.length > 0) {
-      sfx.playStreakBonus()
-    }
-
-    const completedCategories = [...new Set(userStore.tasks.filter(t => t.completedToday).map(t => t.category))]
-    if (completedCategories.length >= 3) {
-      const synergyBonus = gameStore.checkDailyMission(completedCategories)
-      if (synergyBonus > 0) {
-        userStore.addPoints(synergyBonus, '全能挑戰者')
-        sfx.playStreakBonus()
-        showSynergyBonus(synergyBonus)
-      }
-    }
+    alert('✅ 已確認！學生獲得 +' + reward + ' 分')
   }
+}
+
+function rejectRecord(recordId) {
+  userStore.rejectCompletion(recordId)
+  alert('❌ 已否決，該記錄已被移除')
+}
+
+function handleDailyMission(tabId) {
+  currentTab.value = tabId
 }
 
 function showPetEvolvedModal() {

@@ -18,6 +18,7 @@ const STORAGE_KEYS = {
   LUCK_WHEEL: 'challengehero_luck_wheel',
   CERTIFICATES: 'challengehero_certificates',
   SPINS: 'challengehero_spins',
+PENDING_COMPLETIONS: 'challengehero_pending_completions',
 }
 
 class LocalStorage {
@@ -250,6 +251,19 @@ class LocalStorage {
     try {
       localStorage.setItem(STORAGE_KEYS.SETTINGS, JSON.stringify(settings))
     } catch (e) { console.error('Save settings failed:', e) }
+  }
+
+  // 待家長確認記錄
+  loadPendingCompletions() {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEYS.PENDING_COMPLETIONS)
+      if (saved) return JSON.parse(saved)
+    } catch (e) {}
+    return []
+  }
+
+  savePendingCompletions(records) {
+    try { localStorage.setItem(STORAGE_KEYS.PENDING_COMPLETIONS, JSON.stringify(records)) } catch (e) {}
   }
 
   // 更新 streak
