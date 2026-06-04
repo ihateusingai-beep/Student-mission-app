@@ -1160,7 +1160,33 @@ function completeTaskWithFX(taskId) {
 
 function openCameraForTask(taskId) {
   cameraTaskId.value = taskId
+
+  // Check if mediaDevices is supported
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    alert('⚠️ 您的瀏覽器不支援相機功能\n請使用 Chrome、Safari 或 Edge 瀏覽器\n\n💡 提示：相機需要 HTTPS 或 localhost')
+    showCameraModal.value = false
+    return
+  }
+
+  // HTTPS check for camera API
+  if (location.protocol !== 'https:' && location.hostname !== 'localhost' && location.hostname !== '127.0.0.1') {
+    alert('⚠️ 相機需要安全連線\n請使用 HTTPS 網址或 localhost')
+    showCameraModal.value = false
+    return
+  }
+
+  // Check for camera hardware
+  if (navigator.mediaDevices.getCapabilities) {
+    const caps = navigator.mediaDevices.getCapabilities('video')
+    if (!caps) {
+      alert('⚠️ 未偵測到相機\n請確保設備有相機並已連接')
+      showCameraModal.value = false
+      return
+    }
+  }
+
   showCameraModal.value = true
+
   navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
     .then(stream => {
       cameraStream.value = stream
@@ -1171,8 +1197,19 @@ function openCameraForTask(taskId) {
       })
     })
     .catch(err => {
-      console.error('Camera error:', err)
-      alert('無法開啟相機，請檢查權限設定')
+      let msg = '無法開啟相機\n\n'
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        msg += '❌ 權限被拒絕\n請在瀏覽器設定中允許相機訪問'
+      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+        msg += '❌ 找不到相機\n請確認設備有相機'
+      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
+        msg += '❌ 相機被其他應用使用中\n請關閉其他使用相機的App'
+      } else if (err.name === 'OverconstrainedError') {
+        msg += '❌ 相機設置不支援\n請嘗試重新整理頁面'
+      } else {
+        msg += '📌 可能原因：\n• 相機被其他應用佔用\n• 瀏覽器權限未允許\n• 設備不支援'
+      }
+      alert(msg)
       showCameraModal.value = false
     })
 }
