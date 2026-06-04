@@ -1175,16 +1175,6 @@ function openCameraForTask(taskId) {
     return
   }
 
-  // Check for camera hardware
-  if (navigator.mediaDevices.getCapabilities) {
-    const caps = navigator.mediaDevices.getCapabilities('video')
-    if (!caps) {
-      alert('⚠️ 未偵測到相機\n請確保設備有相機並已連接')
-      showCameraModal.value = false
-      return
-    }
-  }
-
   showCameraModal.value = true
 
   navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
