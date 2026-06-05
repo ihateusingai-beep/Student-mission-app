@@ -710,6 +710,44 @@
             </div>
           </div>
 
+          <!-- 獎勵列表（可編輯/刪除）-->
+          <div class="card">
+            <h3 class="font-bold text-gray-700 mb-3">📋 獎勵列表</h3>
+            <div class="space-y-2 max-h-[300px] overflow-y-auto">
+              <div v-for="reward in userStore.rewards" :key="reward.id"
+                class="flex items-center gap-2 p-2 bg-gray-50 rounded-lg text-sm">
+                <span class="text-lg">{{ reward.icon }}</span>
+                <div class="flex-1 min-w-0">
+                  <div class="font-medium truncate">{{ reward.name }}</div>
+                  <div class="text-xs text-gray-500">{{ reward.cost }}分<span v-if="reward.isMoney" class="ml-1 text-purple-500">💵</span></div>
+                </div>
+                <button @click="openRewardEditor(reward)" class="btn btn-warning text-xs px-2 py-1" aria-label="編輯">✏️</button>
+                <button @click="deleteReward(reward.id)" class="btn bg-red-500 text-white text-xs px-2 py-1" aria-label="刪除">✕</button>
+              </div>
+              <div v-if="userStore.rewards.length === 0" class="text-center text-gray-400 py-4 text-sm">還沒有獎勵</div>
+            </div>
+          </div>
+
+          <!-- 編輯獎勵彈窗 -->
+          <div v-if="showRewardEditor" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
+            <div class="bg-white rounded-2xl p-4 w-full max-w-sm space-y-3">
+              <h3 class="font-bold text-lg">✏️ 編輯獎勵</h3>
+              <input v-model="editingReward.name" placeholder="獎勵名稱" class="w-full px-3 py-2 border rounded-xl" />
+              <div class="flex gap-2">
+                <input v-model.number="editingReward.cost" type="number" placeholder="分數" class="flex-1 px-3 py-2 border rounded-xl" />
+                <input v-model="editingReward.icon" placeholder="🎁" class="w-16 px-3 py-2 border rounded-xl" />
+              </div>
+              <label class="flex items-center gap-2 px-3 py-2 border rounded-xl cursor-pointer">
+                <input type="checkbox" v-model="editingReward.isMoney" class="accent-purple-500" />
+                <span class="text-sm">💵 金錢獎勵</span>
+              </label>
+              <div class="flex gap-2">
+                <button @click="saveRewardEdit" class="btn btn-primary flex-1">✓ 儲存</button>
+                <button @click="closeRewardEditor" class="btn bg-gray-300 flex-1">✕ 取消</button>
+              </div>
+            </div>
+          </div>
+
           <div class="card">
             <h3 class="font-bold text-gray-700 mb-3">🔐 {{ t('setPin') }}</h3>
             <div class="flex gap-2">
@@ -898,6 +936,8 @@ const rewardAmount = ref(0)
 const rewardReason = ref('')
 const newTask = ref({ name: '', reward: 10, category: '自訂' })
 const newReward = ref({ name: '', cost: 100, icon: '🎁', isMoney: false })
+const editingReward = ref(null) // { id, name, cost, icon, isMoney }
+const showRewardEditor = ref(false)
 
 const reducedMotion = ref(false)
 const showPetEvolved = ref(false)
@@ -1351,6 +1391,30 @@ function addNewReward() {
     sfx.playRewardBuy()
     newReward.value = { name: '', cost: 100, icon: '🎁', isMoney: false }
   }
+}
+
+function deleteReward(rewardId) {
+  if (confirm('確定刪除這個獎勵？')) {
+    userStore.removeReward(rewardId)
+  }
+}
+
+function openRewardEditor(reward) {
+  editingReward.value = { ...reward }
+  showRewardEditor.value = true
+}
+
+function saveRewardEdit() {
+  if (editingReward.value?.name?.trim()) {
+    userStore.updateReward(editingReward.value.id, { ...editingReward.value })
+    showRewardEditor.value = false
+    editingReward.value = null
+  }
+}
+
+function closeRewardEditor() {
+  showRewardEditor.value = false
+  editingReward.value = null
 }
 
 function verifyPin() {

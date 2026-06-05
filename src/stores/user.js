@@ -274,6 +274,14 @@ export const useUserStore = defineStore('user', () => {
     }
   }
 
+  function updateReward(rewardId, updates) {
+    const reward = rewards.value.find(r => r.id === rewardId)
+    if (reward) {
+      Object.assign(reward, updates)
+      storage.saveRewards(rewards.value)
+    }
+  }
+
   function updateName(name) {
     currentUser.value.name = name
     storage.saveUser(currentUser.value)
@@ -357,6 +365,7 @@ export const useUserStore = defineStore('user', () => {
     removeTask,
     addReward,
     removeReward,
+    updateReward,
     updateName,
     addPoints,
     addLog,
