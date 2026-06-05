@@ -653,7 +653,7 @@
         <div v-if="!adminUnlocked" class="card">
           <h2 class="font-bold text-lg text-center mb-4">🔐 {{ t('adminConsole') }}</h2>
           <p class="text-sm text-gray-500 text-center mb-4">{{ t('needPin') }}</p>
-          <input v-model="pinInput" type="password" maxlength="4" :placeholder="t('enterPin')" class="w-full px-4 py-3 text-center text-xl border-2 border-gray-300 rounded-xl mb-3" aria-label="輸入PIN碼" />
+          <input v-model="pinInput" @keyup.enter="verifyPin" type="password" maxlength="4" :placeholder="t('enterPin')" class="w-full px-4 py-3 text-center text-xl border-2 border-gray-300 rounded-xl mb-3" aria-label="輸入PIN碼" />
           <button @click="verifyPin" class="btn btn-primary w-full" aria-label="確認PIN">{{ t('confirm') }}</button>
           <p v-if="pinError" class="text-red-500 text-center mt-2">{{ t('pinError') }}</p>
         </div>
