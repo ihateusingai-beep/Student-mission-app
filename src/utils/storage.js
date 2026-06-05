@@ -271,15 +271,35 @@ class LocalStorage {
     const settings = this.loadSettings()
     const yesterday = new Date()
     yesterday.setDate(yesterday.getDate() - 1)
-    
+
     if (settings.lastActiveDate === yesterday.toDateString()) {
       settings.streak = (settings.streak || 0) + 1
     } else if (settings.lastActiveDate !== this.today) {
       settings.streak = 1 // 新開始
+      // 重置每日徽章
+      this.resetDailyBadges()
     }
     settings.lastActiveDate = this.today
     this.saveSettings(settings)
     return settings.streak
+  }
+
+  // 重置每日徽章進度
+  resetDailyBadges() {
+    try {
+      const savedBadges = localStorage.getItem(STORAGE_KEYS.BADGES)
+      if (!savedBadges) return
+      const badges = JSON.parse(savedBadges)
+      badges.forEach(badge => {
+        if (badge.resetDaily) {
+          badge.progress = 0
+          badge.unlocked = false
+        }
+      })
+      localStorage.setItem(STORAGE_KEYS.BADGES, JSON.stringify(badges))
+    } catch (e) {
+      console.error('Reset daily badges failed:', e)
+    }
   }
 
   // 清除所有數據

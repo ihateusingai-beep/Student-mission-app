@@ -22,12 +22,25 @@ const DEFAULT_REWARDS = [
 ]
 
 const DEFAULT_BADGES = [
-  { id: 'b1', name: '根本正面羽球高手', desc: '羽毛球高手認證', progress: 4, max: 10, icon: '🏸', unlocked: false, category: '運動' },
-  { id: 'b2', name: '早睡Body好', desc: '早睡習慣', progress: 0, max: 3, icon: '😴', unlocked: false, category: '習慣' },
-  { id: 'b3', name: '沙發馬鈴薯蛻皮', desc: '離開沙發開始運動', progress: 3, max: 10, icon: '🛋️', unlocked: false, category: '運動' },
-  { id: 'b4', name: '汗水製造工廠廠長', desc: '持續運動產出汗水量', progress: 3, max: 30, icon: '💦', unlocked: false, category: '運動' },
-  { id: 'b5', name: '地表最強過動生物', desc: '運動量極高', progress: 3, max: 100, icon: '⚡', unlocked: false, category: '運動' },
-  { id: 'b6', name: '海拔高度收集大師', desc: '收集海拔', progress: 1, max: 10, icon: '🏔️', unlocked: false, category: '運動' },
+  // === 每日重置型（短週期）===
+  { id: 'daily_1', name: '早起鳥', desc: '7點前起身', progress: 0, max: 1, icon: '🌅', unlocked: false, category: 'daily', resetDaily: true },
+  { id: 'daily_2', name: '每日達人', desc: '每日完成3個任務', progress: 0, max: 1, icon: '⭐', unlocked: false, category: 'daily', resetDaily: true },
+  { id: 'daily_3', name: '活力滿分', desc: '每日運動', progress: 0, max: 1, icon: '💪', unlocked: false, category: 'daily', resetDaily: true },
+
+  // === 階梯型（中週期）===
+  { id: 'ladder_1', name: '初試啼聲', desc: '完成1個任務', progress: 0, max: 1, icon: '🎯', unlocked: false, category: 'ladder' },
+  { id: 'ladder_2', name: '小試牛刀', desc: '完成5個任務', progress: 0, max: 5, icon: '🔥', unlocked: false, category: 'ladder' },
+  { id: 'ladder_3', name: '十項全能', desc: '完成10個任務', progress: 0, max: 10, icon: '🏆', unlocked: false, category: 'ladder' },
+  { id: 'ladder_4', name: '百折不撓', desc: '完成20個任務', progress: 0, max: 20, icon: '💎', unlocked: false, category: 'ladder' },
+  { id: 'ladder_5', name: '千錘百鍊', desc: '完成50個任務', progress: 0, max: 50, icon: '👑', unlocked: false, category: 'ladder' },
+
+  // === 永久成就型（長週期）===
+  { id: 'perm_1', name: '學習專家', desc: '完成10個學習任務', progress: 0, max: 10, icon: '📚', unlocked: false, category: '學習' },
+  { id: 'perm_2', name: '運動健將', desc: '完成10個運動任務', progress: 0, max: 10, icon: '🏃', unlocked: false, category: '運動' },
+  { id: 'perm_3', name: '家務達人', desc: '完成10個家務任務', progress: 0, max: 10, icon: '🧹', unlocked: false, category: '家務' },
+  { id: 'perm_4', name: '早起連線', desc: '14天連續早起', progress: 0, max: 14, icon: '🌞', unlocked: false, category: 'streak' },
+  { id: 'perm_5', name: '情緒達人', desc: '7天無發脾氣', progress: 0, max: 7, icon: '😁', unlocked: false, category: 'habit' },
+  { id: 'perm_6', name: '徽章收藏家', desc: '解鎖10個徽章', progress: 0, max: 10, icon: '🏅', unlocked: false, category: 'meta' },
 ]
 
 // 通知提醒
@@ -311,14 +324,24 @@ export const useUserStore = defineStore('user', () => {
   function checkBadges(category) {
     badges.value.forEach(badge => {
       if (!badge.unlocked && badge.progress < badge.max) {
+        // 階梯型徽章：任何任務完成都加分
+        if (badge.category === 'ladder') {
+          badge.progress++
+          if (badge.progress >= badge.max) {
+            badge.unlocked = true
+            addLog('解鎖徽章', badge.name, 0)
+            reminderManager.send('🏅 徽章解鎖！', { body: `「${badge.name}」GET！` })
+            if (onBadgeUnlockCallback) onBadgeUnlockCallback(badge)
+          }
+          return
+        }
+        // 其他徽章：需要 category 匹配
         if (badge.category && badge.category !== category) return
         badge.progress++
         if (badge.progress >= badge.max) {
           badge.unlocked = true
           addLog('解鎖徽章', badge.name, 0)
-          reminderManager.send('🏅 徽章解鎖！', {
-            body: `「${badge.name}」GET！`
-          })
+          reminderManager.send('🏅 徽章解鎖！', { body: `「${badge.name}」GET！` })
           if (onBadgeUnlockCallback) onBadgeUnlockCallback(badge)
         }
       }
