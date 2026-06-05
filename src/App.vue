@@ -694,6 +694,24 @@
             </div>
           </div>
 
+          <!-- 家長確認任務 -->
+          <div class="card">
+            <h3 class="font-bold text-gray-700 mb-3">✅ {{ t('confirmTask') || '確認任務完成' }}</h3>
+            <p class="text-xs text-gray-500 mb-3">家長確認後，學生立即獲得積分</p>
+            <div class="space-y-2">
+              <div v-for="task in userStore.tasks" :key="task.id" class="flex justify-between items-center p-2 bg-gray-50 rounded-xl">
+                <div>
+                  <span class="font-medium">{{ task.name }}</span>
+                  <span class="text-xs text-gray-500 ml-2">+{{ task.reward }}分</span>
+                </div>
+                <div class="flex gap-2">
+                  <span v-if="task.completedToday" class="text-xs text-green-600 font-bold">✅ 已完成</span>
+                  <button v-else @click="userStore.confirmTaskManual(task.id)" class="px-3 py-1 bg-green-500 text-white text-xs rounded-lg font-bold" aria-label="確認">確認</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <div class="card">
             <h3 class="font-bold text-gray-700 mb-3">🎁 {{ t('addReward') }}</h3>
             <div class="space-y-2">

@@ -240,6 +240,29 @@ export const useUserStore = defineStore('user', () => {
     return 0
   }
 
+  // 家長手動確認任務（家長控制台用）
+  function confirmTaskManual(taskId) {
+    const task = tasks.value.find(t => t.id === taskId)
+    if (!task) return false
+    // 這個任務今日未完成過
+    if (!task.completedToday) {
+      task.completedToday = true
+      task.totalCount++
+      currentUser.value.points += task.reward
+      addLog('家長確認完成', task.name, task.reward)
+      checkBadges(task.category)
+      saveAll()
+      return true
+    }
+    // 今日已完成，但家長想再確認一次（重新計分）
+    task.totalCount++
+    currentUser.value.points += task.reward
+    addLog('家長確認完成', task.name, task.reward)
+    checkBadges(task.category)
+    saveAll()
+    return true
+  }
+
   function claimReward(rewardId) {
     const reward = rewards.value.find(r => r.id === rewardId)
     if (reward && reward.available && currentUser.value.points >= reward.cost) {
@@ -389,6 +412,7 @@ export const useUserStore = defineStore('user', () => {
     remainingTasks,
     init,
     completeTask,
+    confirmTaskManual,
     createPendingCompletion,
     confirmCompletion,
     rejectCompletion,
