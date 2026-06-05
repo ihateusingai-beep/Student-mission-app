@@ -84,6 +84,9 @@ export const useUserStore = defineStore('user', () => {
   const badges = ref([])
   const activityLog = ref([])
   const settings = ref({ sound: true, streak: 0, adminPin: '1234' })
+  // 徽章解鎖回調
+  let onBadgeUnlockCallback = null
+  function setBadgeUnlockCallback(fn) { onBadgeUnlockCallback = fn }
   // 待家長確認的記錄
   const pendingCompletions = ref([])
 
@@ -316,6 +319,7 @@ export const useUserStore = defineStore('user', () => {
           reminderManager.send('🏅 徽章解鎖！', {
             body: `「${badge.name}」GET！`
           })
+          if (onBadgeUnlockCallback) onBadgeUnlockCallback(badge)
         }
       }
     })
@@ -378,6 +382,7 @@ export const useUserStore = defineStore('user', () => {
     setPin,
     clearPin,
     exportData,
+    setBadgeUnlockCallback,
     importData,
     resetAll
   }

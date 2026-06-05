@@ -1646,6 +1646,13 @@ onMounted(() => {
   soundEnabled.value = userStore.settings?.sound ?? true
   notificationEnabled.value = reminderManager.permission === 'granted'
   if (!userStore.settings?.adminPin) adminUnlocked.value = true
+
+  // 徽章解鎖時播放慶祝動畫 + 聲音
+  userStore.setBadgeUnlockCallback((badge) => {
+    sfx.playBadgeUnlock()
+    openBadgeModal(badge.name, badge.icon)
+    triggerConfetti()
+  })
 })
 </script>
 
