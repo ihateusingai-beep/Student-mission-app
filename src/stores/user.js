@@ -13,12 +13,12 @@ const DEFAULT_TASKS = [
 ]
 
 const DEFAULT_REWARDS = [
-  { id: 'r1', name: 'Line 手機儲值', cost: 290, available: true, icon: '💰', image: 'treasure' },
-  { id: 'r2', name: '單一個游加1小時', cost: 100, available: true, icon: '🎮', image: 'gift_box' },
-  { id: 'r3', name: '單一個游加15分鐘', cost: 15, available: true, icon: '🎮', image: 'lollipop' },
-  { id: 'r4', name: '荒野月卡(普通)', cost: 800, available: true, icon: '🏕️', image: 'flowers' },
-  { id: 'r5', name: '荒野月卡(高級)', cost: 5000, available: false, icon: '🏕️', image: 'icecream' },
-  { id: 'r6', name: '樂高盒組(五千元以內)', cost: 5000, available: false, icon: '🧱', image: 'treasure' },
+  { id: 'r1', name: '遊戲時間（60分鐘）', cost: 100, available: true, icon: '🎮', image: 'gift_box', isMoney: false },
+  { id: 'r2', name: '遊戲時間（15分鐘）', cost: 15, available: true, icon: '🎮', image: 'lollipop', isMoney: false },
+  { id: 'r3', name: '玩具時間（30分鐘）', cost: 50, available: true, icon: '🧸', image: 'treasure', isMoney: false },
+  { id: 'r4', name: '睡晚30分鐘', cost: 80, available: true, icon: '😴', image: 'flowers', isMoney: false },
+  { id: 'r5', name: '圖書借閱券', cost: 20, available: true, icon: '📚', image: 'icecream', isMoney: false },
+  { id: 'r6', name: '零食兌換券', cost: 30, available: true, icon: '🍪', image: 'treasure', isMoney: false },
 ]
 
 const DEFAULT_BADGES = [
@@ -258,7 +258,8 @@ export const useUserStore = defineStore('user', () => {
       name: rewardData.name,
       cost: rewardData.cost,
       available: true,
-      icon: rewardData.icon || '🎁'
+      icon: rewardData.icon || '🎁',
+      isMoney: rewardData.isMoney || false
     }
     rewards.value.push(newReward)
     storage.saveRewards(rewards.value)

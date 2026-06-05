@@ -698,9 +698,13 @@
             <h3 class="font-bold text-gray-700 mb-3">🎁 {{ t('addReward') }}</h3>
             <div class="space-y-2">
               <input v-model="newReward.name" :placeholder="t('rewardName')" class="w-full px-3 py-2 border rounded-xl" />
-              <div class="flex gap-2">
-                <input v-model.number="newReward.cost" type="number" :placeholder="t('cost')" class="flex-1 px-3 py-2 border rounded-xl" />
+              <div class="flex gap-2 flex-wrap">
+                <input v-model.number="newReward.cost" type="number" :placeholder="t('cost')" class="flex-1 min-w-[100px] px-3 py-2 border rounded-xl" />
                 <input v-model="newReward.icon" placeholder="🎁" class="w-16 px-3 py-2 border rounded-xl" />
+                <label class="flex items-center gap-2 px-3 py-2 border rounded-xl cursor-pointer">
+                  <input type="checkbox" v-model="newReward.isMoney" class="accent-purple-500" />
+                  <span class="text-sm">💵 金錢獎勵</span>
+                </label>
                 <button @click="addNewReward" class="btn btn-primary" aria-label="新增獎勵">+</button>
               </div>
             </div>
@@ -893,7 +897,7 @@ const leaderboardType = ref('weekly')
 const rewardAmount = ref(0)
 const rewardReason = ref('')
 const newTask = ref({ name: '', reward: 10, category: '自訂' })
-const newReward = ref({ name: '', cost: 100, icon: '🎁' })
+const newReward = ref({ name: '', cost: 100, icon: '🎁', isMoney: false })
 
 const reducedMotion = ref(false)
 const showPetEvolved = ref(false)
@@ -1345,7 +1349,7 @@ function addNewReward() {
   if (newReward.value.name.trim()) {
     userStore.addReward({ ...newReward.value })
     sfx.playRewardBuy()
-    newReward.value = { name: '', cost: 100, icon: '🎁' }
+    newReward.value = { name: '', cost: 100, icon: '🎁', isMoney: false }
   }
 }
 
