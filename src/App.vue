@@ -769,6 +769,12 @@
                     </div>
                     <div class="text-xs text-gray-400 mt-0.5">今日 {{ userStore.todayTasksCompleted }} / {{ badge.threshold }} 任務</div>
                   </div>
+                  <div v-if="!badge.unlocked && badge.category && badge.category !== 'ladder' && badge.category !== 'daily'" class="mt-1">
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div class="bg-purple-400 rounded-full h-2 transition-all" :style="{ width: Math.min(100, (badge.progress / badge.max) * 100) + '%' }"></div>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-0.5">{{ badge.progress }} / {{ badge.max }} ({{ badge.category }})</div>
+                  </div>
                 </div>
                 <span v-if="badge.unlocked" class="text-lg">✅</span>
                 <span v-else class="text-gray-300 text-lg">🔒</span>
