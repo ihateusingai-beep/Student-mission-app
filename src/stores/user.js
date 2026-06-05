@@ -112,12 +112,14 @@ export const useUserStore = defineStore('user', () => {
 
   // PIN 驗證 - 如果未設定 PIN，必須提示用戶設定
   function verifyPin(input) {
-    // 如果從未設定 PIN（舊用戶），預設為 '1234'
+    // 確保 input 是字串並去除空白
+    const normalizedInput = String(input || '').trim()
     const storedPin = settings.value.adminPin
+    // 如果從未設定 PIN（舊用戶），預設為 '1234'
     if (storedPin === null || storedPin === undefined) {
-      return '1234' === input
+      return normalizedInput === '1234'
     }
-    return storedPin === input
+    return storedPin === normalizedInput
   }
 
   function setPin(pin) {

@@ -38,7 +38,8 @@ const translations = {
     certificate: '證書', certificates: '證書牆', certificateEarned: '證書獲得', print: '列印', newFeature: '新功能解鎖',
     stats: '數據', statsTip: '一目了然', totalPoints: '總積分', totalTasks: '總任務', weeklyTrend: '每週趨勢', categoryBreakdown: '分類比例', achievementProgress: '成就進度', achievements: '成就',
     // Parent QR view
-    parentView: '家長視圖', scanQR: '掃描 QR 碼查看孩子進度', childName: '孩子名稱', scanQRCode: '掃描 QR 碼', noQRData: '暫無 QR 數據', progress: '進度', points: '積分', streak: '連續', tasks: '任務'
+    parentView: '家長視圖', scanQR: '掃描 QR 碼查看孩子進度', childName: '孩子名稱', scanQRCode: '掃描 QR 碼', noQRData: '暫無 QR 數據', progress: '進度', points: '積分', streak: '連續', tasks: '任務',
+    badgeProgress: '学生徽章进度', confirmTask: '确认任务完成'
   },
   'en': {
     home: 'Home', tasks: 'Tasks', rewards: 'Rewards', badges: 'Badges', admin: 'Parent', settings: 'Settings',
@@ -75,7 +76,8 @@ const translations = {
     certificate: 'Certificate', certificates: 'Certificates', certificateEarned: 'Earned', print: 'Print', newFeature: 'New Unlock',
     stats: 'Stats', statsTip: 'Overview', totalPoints: 'Total Points', totalTasks: 'Total Tasks', weeklyTrend: 'Weekly Trend', categoryBreakdown: 'Categories', achievementProgress: 'Achievements', achievements: 'Awards',
     // Parent QR view
-    parentView: 'Parent View', scanQR: 'Scan QR to view child progress', childName: 'Child Name', scanQRCode: 'Scan QR Code', noQRData: 'No QR data', progress: 'Progress', points: 'Points', streak: 'Streak', tasks: 'Tasks'
+    parentView: 'Parent View', scanQR: 'Scan QR to view child progress', childName: 'Child Name', scanQRCode: 'Scan QR Code', noQRData: 'No QR data', progress: 'Progress', points: 'Points', streak: 'Streak', tasks: 'Tasks',
+    badgeProgress: '学生徽章进度', confirmTask: '确认任务完成'
   },
   'zh-CN': {
     home: '首页', tasks: '任务', rewards: '商店', badges: '徽章', admin: '家长', settings: '设置',
