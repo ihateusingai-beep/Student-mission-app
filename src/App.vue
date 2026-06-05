@@ -746,6 +746,37 @@
             </div>
           </div>
 
+          <!-- Badge 進度（家長視圖）-->
+          <div class="card">
+            <h3 class="font-bold text-gray-700 mb-3">🏆 {{ t('badgeProgress') || '學生徽章進度' }}</h3>
+            <div class="space-y-2 max-h-[300px] overflow-y-auto">
+              <div v-for="badge in userStore.badges" :key="badge.id"
+                class="flex items-center gap-3 p-2 rounded-xl text-sm"
+                :class="badge.unlocked ? 'bg-yellow-50' : 'bg-gray-50'">
+                <span class="text-2xl">{{ badge.icon }}</span>
+                <div class="flex-1 min-w-0">
+                  <div class="font-medium">{{ badge.name }}</div>
+                  <div class="text-xs text-gray-500">{{ badge.desc }}</div>
+                  <div v-if="!badge.unlocked && badge.type === 'ladder'" class="mt-1">
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div class="bg-yellow-400 rounded-full h-2 transition-all" :style="{ width: Math.min(100, (userStore.totalPoints / badge.threshold) * 100) + '%' }"></div>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-0.5">{{ userStore.totalPoints }} / {{ badge.threshold }} 分</div>
+                  </div>
+                  <div v-if="!badge.unlocked && badge.type === 'resetDaily'" class="mt-1">
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                      <div class="bg-blue-400 rounded-full h-2 transition-all" :style="{ width: Math.min(100, (userStore.todayTasksCompleted / badge.threshold) * 100) + '%' }"></div>
+                    </div>
+                    <div class="text-xs text-gray-400 mt-0.5">今日 {{ userStore.todayTasksCompleted }} / {{ badge.threshold }} 任務</div>
+                  </div>
+                </div>
+                <span v-if="badge.unlocked" class="text-lg">✅</span>
+                <span v-else class="text-gray-300 text-lg">🔒</span>
+              </div>
+              <div v-if="userStore.badges.length === 0" class="text-center text-gray-400 py-4 text-sm">還沒有徽章</div>
+            </div>
+          </div>
+
           <!-- 編輯獎勵彈窗 -->
           <div v-if="showRewardEditor" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
             <div class="bg-white rounded-2xl p-4 w-full max-w-sm space-y-3">
