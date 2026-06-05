@@ -1177,31 +1177,40 @@ function openCameraForTask(taskId) {
 
   showCameraModal.value = true
 
-  navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
-    .then(stream => {
-      cameraStream.value = stream
-      nextTick(() => {
-        if (cameraRef.value) {
-          cameraRef.value.srcObject = stream
+  // Try back camera first, fallback to any camera
+  const constraints = [
+    { video: { facingMode: { ideal: 'environment' }, width: { ideal: 1280 }, height: { ideal: 720 } } },
+    { video: { facingMode: 'environment' } },
+    { video: true }
+  ]
+
+  function tryCamera(constraintList) {
+    if (constraintList.length === 0) {
+      alert('⚠️ 無法開啟相機\n\n📌 請檢查：\n• 相機權限已允許\n• 沒有其他App在使用相機\n• 重新整理頁面後再試')
+      showCameraModal.value = false
+      return
+    }
+    const constraints = constraintList[0]
+    navigator.mediaDevices.getUserMedia(constraints)
+      .then(stream => {
+        cameraStream.value = stream
+        nextTick(() => {
+          if (cameraRef.value) {
+            cameraRef.value.srcObject = stream
+          }
+        })
+      })
+      .catch(err => {
+        if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+          alert('❌ 權限被拒絕\n\n請在瀏覽器允許相機访问：\n1. 撳 Chrome 地址欄左邊的 🔒\n2. 點「站點設定」\n3. 允許「相機」')
+          showCameraModal.value = false
+        } else {
+          tryCamera(constraintList.slice(1))
         }
       })
-    })
-    .catch(err => {
-      let msg = '無法開啟相機\n\n'
-      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
-        msg += '❌ 權限被拒絕\n請在瀏覽器設定中允許相機訪問'
-      } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
-        msg += '❌ 找不到相機\n請確認設備有相機'
-      } else if (err.name === 'NotReadableError' || err.name === 'TrackStartError') {
-        msg += '❌ 相機被其他應用使用中\n請關閉其他使用相機的App'
-      } else if (err.name === 'OverconstrainedError') {
-        msg += '❌ 相機設置不支援\n請嘗試重新整理頁面'
-      } else {
-        msg += '📌 可能原因：\n• 相機被其他應用佔用\n• 瀏覽器權限未允許\n• 設備不支援'
-      }
-      alert(msg)
-      showCameraModal.value = false
-    })
+  }
+
+  tryCamera(constraints)
 }
 
 function captureAndSubmit() {
