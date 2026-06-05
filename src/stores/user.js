@@ -83,7 +83,7 @@ export const useUserStore = defineStore('user', () => {
   const rewards = ref([])
   const badges = ref([])
   const activityLog = ref([])
-  const settings = ref({ sound: true, streak: 0, adminPin: null })
+  const settings = ref({ sound: true, streak: 0, adminPin: '1234' })
   // 待家長確認的記錄
   const pendingCompletions = ref([])
 
@@ -96,11 +96,12 @@ export const useUserStore = defineStore('user', () => {
 
   // PIN 驗證 - 如果未設定 PIN，必須提示用戶設定
   function verifyPin(input) {
-    // 如果從未設定 PIN，return false 強制設定
-    if (settings.value.adminPin === null || settings.value.adminPin === undefined) {
-      return false
+    // 如果從未設定 PIN（舊用戶），預設為 '1234'
+    const storedPin = settings.value.adminPin
+    if (storedPin === null || storedPin === undefined) {
+      return '1234' === input
     }
-    return settings.value.adminPin === input
+    return storedPin === input
   }
 
   function setPin(pin) {
@@ -143,7 +144,11 @@ export const useUserStore = defineStore('user', () => {
     activityLog.value = savedLogs || []
 
     const savedSettings = storage.loadSettings()
-    settings.value = savedSettings || { sound: true, streak: 0, adminPin: null }
+    settings.value = savedSettings || { sound: true, streak: 0, adminPin: '1234' }
+    // 確保舊用戶（adminPin 為 null）使用預設 PIN
+    if (settings.value.adminPin === null || settings.value.adminPin === undefined) {
+      settings.value.adminPin = '1234'
+    }
 
     settings.value.streak = storage.updateStreak()
 
